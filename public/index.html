@@ -16,6 +16,7 @@
 				<select id="website" class="px-2 py-2 rounded-md border border-gray-300 text-sm">
 					<option value="1337x">1337x</option>
 					<option value="nyaasi">Nyaasi</option>
+					<option value="tgx">Torrent Galaxy</option>
 					<option value="yts">Yts</option>
 				</select>
 			</div>
@@ -130,6 +131,22 @@
 								</div>
 							</div>`;
 				} else if (website === 'nyaasi') {
+					torrentCard = `
+						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
+								<div class="flex justify-between items-center">
+										<h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
+								</div>
+								<div class="flex justify-between text-gray-600">
+										<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+										<div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
+								</div>
+								<div class="grid grid-cols-3 gap-2">
+										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
+										<a href="${torrent.Torrent}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Torrent</a>
+								</div>
+						</div>
+						`;
+				} else if (website === 'tgx') {
 					torrentCard = `
 						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
 								<div class="flex justify-between items-center">
