@@ -7,7 +7,7 @@ const scrapYts = require('./torrent/yts');
 
 const app = express();
 app.use(cors({
-	origin: 'http://localhost:3000/'
+	origin: 'https://arc-torrent.vercel.app'
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
