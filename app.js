@@ -40,6 +40,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				})
 		}
 	}
+	
 	if (website === "all") {
 		combo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {
