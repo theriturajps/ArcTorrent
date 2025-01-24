@@ -99,9 +99,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			}
 		})
 
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaa') {
+	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi') {
 		return res.json({
-			error: 'please enter valid website name (1337x, yts, nyaa, all)'
+			error: 'please enter valid website name (1337x, yts, nyaasi, all)'
 		})
 	}
 });
