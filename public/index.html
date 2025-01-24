@@ -113,6 +113,7 @@
 				} else if (website === 'yts') {
 					torrentCard = `
 						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
+						<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-32 object-cover rounded-md"></img>
 								<div class="flex justify-between items-center">
 										<h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
 										<span class="bg-gray-200 text-xs px-2 py-0.5 rounded">${torrent.ReleasedDate || 'N/A'}</span>
