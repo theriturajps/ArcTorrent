@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-async function yts(query, page = '1') {
+async function torrentYts(query, page = '1') {
 
 	let all = []
 	let ALLURL = [];
