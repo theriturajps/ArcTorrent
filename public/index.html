@@ -23,7 +23,8 @@
 				<input type="number" id="page" class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm"
 					placeholder="Page" min="1">
 				<button onclick="searchTorrents()"
-					class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition duration-200">Search</button>
+					class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition duration-200"> Search
+				</button>
 			</div>
 		</div>
 
@@ -60,7 +61,7 @@
 
 			spinnerContainer.style.display = 'flex';
 
-			let apiUrl = `/api/${website}/${query}/${page}`;
+			let apiUrl = `https://itorrentsearch.vercel.app/api/${website}/${query}/${page}`;
 
 			try {
 				const response = await fetch(apiUrl);
@@ -94,20 +95,20 @@
 				let torrentCard = '';
 				if (website === '1337x') {
 					torrentCard = `
-                        <div class="bg-white border rounded-md p-3 text-sm space-y-2">
-                            <div class="flex justify-between items-center">
-                                <h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
-                                <span class="bg-gray-200 text-xs px-2 py-0.5 rounded">${torrent.Category || 'N/A'}</span>
-                            </div>
-                            <div class="flex justify-between text-gray-600">
-                                <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-                                <div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-2">
-                                <a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
-                            </div>
-                        </div>
-                    `;
+						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
+								<div class="flex justify-between items-center">
+										<h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
+										<span class="bg-gray-200 text-xs px-2 py-0.5 rounded">${torrent.Category || 'N/A'}</span>
+								</div>
+								<div class="flex justify-between text-gray-600">
+										<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+										<div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
+								</div>
+								<div class="grid grid-cols-3 gap-2">
+										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet 1</a>
+								</div>
+						</div>
+						`;
 				}
 
 				resultsDiv.innerHTML += torrentCard;
@@ -119,8 +120,9 @@
 			paginationContainer.innerHTML = '';
 
 			if (totalPages > 1) {
+				// Previous button
 				const prevButton = document.createElement('button');
-				prevButton.innerHTML = '&#8592;';
+				prevButton.innerHTML = '&#8592;'; // Left arrow
 				prevButton.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
 				prevButton.disabled = currentPage === 1;
 				prevButton.addEventListener('click', () => {
@@ -132,13 +134,15 @@
 				});
 				paginationContainer.appendChild(prevButton);
 
+				// Page number indicator
 				const pageIndicator = document.createElement('span');
 				pageIndicator.className = 'px-3 py-1 bg-gray-200 rounded text-sm';
 				pageIndicator.textContent = `${currentPage} / ${totalPages}`;
 				paginationContainer.appendChild(pageIndicator);
 
+				// Next button
 				const nextButton = document.createElement('button');
-				nextButton.innerHTML = '&#8594;';
+				nextButton.innerHTML = '&#8594;'; // Right arrow
 				nextButton.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
 				nextButton.disabled = currentPage === totalPages;
 				nextButton.addEventListener('click', () => {
@@ -152,6 +156,7 @@
 			}
 		}
 
+		// Initial search on page load
 		searchTorrents();
 	</script>
 </body>

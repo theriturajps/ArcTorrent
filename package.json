@@ -1,11 +1,12 @@
 {
-	"name": "torrent-search-api",
+	"name": "ArcTorrent",
 	"version": "1.0.0",
 	"engines": {
 		"node": "18.x"
 	},
 	"scripts": {
-		"start": "node api/index.js"
+		"start": "node app.js",
+		"dev": "nodemon app.js"
 	},
 	"dependencies": {
 		"axios": "^1.6.5",
