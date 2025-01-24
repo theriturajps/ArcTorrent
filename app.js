@@ -4,6 +4,7 @@ const cors = require('cors');
 const torrent1337x = require('./torrent/1337x');
 const torrentYts = require('./torrent/yts');
 const torrentCombo = require('./torrent/COMBO');
+const torrentNyaaSI = require('./torrent/nyaaSI');
 
 const app = express();
 app.use(cors());
@@ -61,6 +62,32 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			})
 	}
 
+	if (website === 'nyaasi') {
+		if (page > 14) {
+			return res.json({
+				error: '14 is the last page'
+			})
+		} else {
+			torrentNyaaSI(query, page)
+				.then((data) => {
+					if (data === null) {
+						return res.json({
+							error: 'Website is blocked change IP'
+						})
+
+					} else if (data.length === 0) {
+						return res.json({
+							error: 'No search result available for query (' + query + ')'
+						})
+					} else {
+						return res.send(data);
+					}
+
+				})
+		}
+
+	}
+
 	if (website === "all") {
 		torrentCombo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {
@@ -72,9 +99,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			}
 		})
 
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts') {
+	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaa') {
 		return res.json({
-			error: 'please select 1337x | all (to scrap from every site)'
+			error: 'please enter valid website name (1337x, yts, nyaa, all)'
 		})
 	}
 });
