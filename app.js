@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const torrent1337x = require('./torrent/1337x');
-const scrapYts = require('./torrent/yts');
-
+const torrentYts = require('./torrent/yts');
+const torrentCombo = require('./torrent/COMBO');
 
 const app = express();
 app.use(cors());
@@ -43,7 +43,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	}
 
 	if (website === 'yts') {
-		scrapYts.yts(query, page)
+		torrentYts(query, page)
 			.then((data) => {
 				if (data === null) {
 					return res.json({
@@ -62,7 +62,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	}
 
 	if (website === "all") {
-		combo(query, page).then((data) => {
+		torrentCombo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {
 				return res.send(data);
 			} else {
