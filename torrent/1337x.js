@@ -1,8 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-
-
 async function torrent1337x(query = '', page = '1') {
 
 	const allTorrent = [];
