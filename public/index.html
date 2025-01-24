@@ -98,82 +98,102 @@
 				let torrentCard = '';
 				if (website === '1337x') {
 					torrentCard = `
-						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
-								<div class="flex justify-between items-center">
-										<h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
-										<span class="bg-gray-200 text-xs px-2 py-0.5 rounded">${torrent.Category || 'N/A'}</span>
-								</div>
-								<div class="flex justify-between text-gray-600">
-										<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-										<div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
-								</div>
-								<div class="grid grid-cols-3 gap-2">
-										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
-								</div>
-						</div>
+							<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
+									<div class="p-3 space-y-2">
+											<div class="flex justify-between items-center">
+													<h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
+													<span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
+											</div>
+											<div class="flex justify-between items-center text-xs text-gray-400">
+													<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+													<div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+											</div>
+											<div class="grid grid-cols-1 gap-2">
+													<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+															Magnet
+													</a>
+											</div>
+									</div>
+							</div>
 						`;
 				} else if (website === 'yts') {
-					torrentCard = `<div class="bg-gray-900 text-white rounded-xl overflow-hidden shadow-lg">
-								<div class="relative">
-									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-48 object-cover" />
-									<div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-								</div>
-								<div class="p-4">
-									<div class="flex justify-between items-center">
-										<h3 class="text-lg font-bold text-blue-400 truncate">${torrent.Name}</h3>
-										<span class="text-xs bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
+					torrentCard = `
+					<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
+							<div class="relative h-48 overflow-hidden">
+									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+									<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+											<h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
 									</div>
-									<div class="flex justify-between items-center text-gray-400 mt-2">
-										<div>Rating: <span class="font-medium">${torrent.Rating || '-'}</span></div>
-										<div>Genre: <span class="text-green-500 font-bold">${torrent.Genre || '-'}</span></div>
-									</div>
-									<div class="grid grid-cols-2 gap-2 mt-2">
-								${torrent.Files.map(file => `
-									<a href="${file.Torrent}" class="text-center bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600">${file.Quality} Torrent</a>
-									<a href="${file.Magnet}" class="text-center bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600">${file.Quality} Magnet</a>
-								`).join('')}
 							</div>
-								</div>
-							</div>`;
+							<div class="p-3 space-y-2">
+									<div class="flex justify-between items-center text-xs">
+											<span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
+											<span class="text-green-400">${torrent.Rating || '-'} ★</span>
+									</div>
+									<div class="grid grid-cols-2 gap-2">
+											${torrent.Files.map(file => `
+													<a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+															${file.Quality} Torrent
+													</a>
+													<a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+															${file.Quality} Magnet
+													</a>
+											`).join('')}
+									</div>
+							</div>
+					</div>
+					`;
 				} else if (website === 'nyaasi') {
 					torrentCard = `
-						<div class="bg-white border rounded-md p-3 text-sm space-y-2">
-								<div class="flex justify-between items-center">
-										<h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
-								</div>
-								<div class="flex justify-between text-gray-600">
-										<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-										<div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
-								</div>
-								<div class="grid grid-cols-3 gap-2">
-										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
-										<a href="${torrent.Torrent}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Torrent</a>
-								</div>
-						</div>
+							<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
+									<div class="p-3 space-y-2">
+											<div class="flex justify-between items-center">
+													<h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
+													<span class="bg-gray-800 px-2 py-1 rounded text-xs">Nyaasi</span>
+											</div>
+											<div class="flex justify-between items-center text-xs text-gray-400">
+													<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+													<div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+											</div>
+											<div class="grid grid-cols-2 gap-2">
+													<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+															Magnet
+													</a>
+													<a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+															Torrent
+													</a>
+											</div>
+									</div>
+							</div>
 						`;
 				} else if (website === 'tgx') {
-					torrentCard = `<div class="bg-gray-900 text-white rounded-xl overflow-hidden shadow-lg">
-							<div class="relative">
-									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-48 object-cover" />
-									<div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-							</div>
-							<div class="p-4">
-									<div class="flex justify-between items-center">
-											<h3 class="text-lg font-bold text-blue-400 truncate">${torrent.Name}</h3>
-									</div>
-									<div class="flex justify-between items-center text-gray-400 mt-2">
-										<div>Category: <span class="text-green-500 font-bold">${torrent.Category || 'N/A'}</span></div>
-									</div>
-									<div class="flex justify-between items-center text-gray-400 mt-2">
-											<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-											<div>Seeds: <span class="text-green-500 font-bold">${torrent.Seeders || '-'}</span></div>
-									</div>
-									<div class="grid grid-cols-3 gap-2 mt-2">
-											<a href="${torrent.Magnet}" class="text-center bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600">Magnet</a>
-											<a href="${torrent.Torrent}" class="text-center bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600">Torrent</a>
+					torrentCard = `
+					<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
+							<div class="relative h-48 overflow-hidden">
+									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+									<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+											<h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
 									</div>
 							</div>
-					</div>`;
+							<div class="p-3 space-y-2">
+									<div class="flex justify-between items-center text-xs">
+											<span class="bg-gray-800 px-2 py-1 rounded">${torrent.Category || 'N/A'}</span>
+											<div class="flex items-center space-x-2">
+													<span>Size: ${torrent.Size || '-'}</span>
+													<span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
+											</div>
+									</div>
+									<div class="grid grid-cols-2 gap-2">
+											<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+													Magnet
+											</a>
+											<a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+													Torrent
+											</a>
+									</div>
+							</div>
+					</div>
+					`;
 				}
 				resultsDiv.innerHTML += torrentCard;
 			});
