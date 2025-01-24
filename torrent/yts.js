@@ -71,7 +71,6 @@ async function yts(query, page = '1') {
 				data.Files.push(files);
 			})
 
-
 		})
 		all.push(data);
 	}))
