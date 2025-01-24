@@ -117,9 +117,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				});
 			}
 		})
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi') {
+	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi' && website !== 'tgx') {
 		return res.json({
-			error: 'please enter valid website name (1337x, yts, nyaasi, all)'
+			error: 'please enter valid website name (1337x, yts, nyaasi, tgx and all)'
 		})
 	}
 });
