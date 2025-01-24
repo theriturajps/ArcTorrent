@@ -1,3 +1,6 @@
+const torrentYts = require('./yts');
+const torrent1337x = require('./1337x');
+
 async function torrentCombo(query, page) {
 	let comboTorrent = []
 	await Promise.all([
