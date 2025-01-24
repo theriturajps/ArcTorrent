@@ -5,44 +5,60 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ArcTorrent</title>
-	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
-	<main class="flex-grow container mx-auto px-4 py-6">
-		<div class="max-w-sm mx-auto space-y-3">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+	<header class="bg-gray-800 shadow-md py-2">
+		<div class="container mx-auto px-2 flex items-center justify-between">
+			<h1 class="text-lg font-bold text-blue-400 flex items-center">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" />
+				</svg>
+				ArcTorrent
+			</h1>
+		</div>
+	</header>
+
+	<main class="flex-grow container mx-auto px-2 py-3">
+		<div class="max-w-xl mx-auto space-y-2">
 			<div class="flex space-x-2">
 				<input type="text" id="query"
-					class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm focus:ring-2 focus:ring-blue-300"
+					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500"
 					placeholder="Search torrents">
-				<select id="website" class="px-2 py-2 rounded-md border border-gray-300 text-sm">
+				<select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
 					<option value="1337x">1337x</option>
 					<option value="nyaasi">Nyaasi</option>
-					<option value="tgx">Torrent Galaxy</option>
-					<option value="yts">Yts</option>
+					<option value="tgx">TGX</option>
+					<option value="yts">YTS</option>
 				</select>
 			</div>
+
 			<div class="flex space-x-2">
-				<input type="number" id="page" class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm"
+				<input type="number" id="page"
+					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white"
 					placeholder="Page" min="1">
 				<button onclick="searchTorrents()"
-					class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition duration-200">
-					Search</button>
+					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+					Search
+				</button>
 			</div>
 		</div>
 
-		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-			<!-- Torrent cards will be generated here -->
+		<div id="results" class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mt-3">
+			<!-- Torrent cards will be dynamically generated here -->
 		</div>
 
-		<div id="paginationContainer" class="flex justify-center items-center space-x-2 mt-6">
+		<div id="paginationContainer" class="flex justify-center items-center space-x-1 mt-3">
 			<!-- Pagination buttons will be dynamically added here -->
 		</div>
 	</main>
 
-	<div id="spinner-container"
-		class="fixed top-0 left-0 w-full h-full bg-white bg-opacity-75 flex justify-center items-center z-50"
-		style="display: none;">
+	<footer class="bg-gray-800 py-2 text-center text-xs text-gray-400">
+		© 2024 ArcTorrent
+	</footer>
+
+	<div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
 		<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
 	</div>
 
@@ -98,101 +114,101 @@
 				let torrentCard = '';
 				if (website === '1337x') {
 					torrentCard = `
-							<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
-									<div class="p-3 space-y-2">
-											<div class="flex justify-between items-center">
-													<h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
-													<span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
-											</div>
-											<div class="flex justify-between items-center text-xs text-gray-400">
-													<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-													<div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
-											</div>
-											<div class="grid grid-cols-1 gap-2">
-													<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-															Magnet
-													</a>
-											</div>
-									</div>
-							</div>
+<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-105 hover:border-red-500">
+    <div class="p-3 space-y-2">
+        <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
+            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
+        </div>
+        <div class="flex justify-between items-center text-xs text-gray-400">
+            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+        </div>
+        <div class="grid grid-cols-1 gap-2">
+            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+                Magnet
+            </a>
+        </div>
+    </div>
+</div>
 						`;
 				} else if (website === 'yts') {
 					torrentCard = `
-					<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
-							<div class="relative h-48 overflow-hidden">
-									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
-									<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-											<h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
-									</div>
-							</div>
-							<div class="p-3 space-y-2">
-									<div class="flex justify-between items-center text-xs">
-											<span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
-											<span class="text-green-400">${torrent.Rating || '-'} ★</span>
-									</div>
-									<div class="grid grid-cols-2 gap-2">
-											${torrent.Files.map(file => `
-													<a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-															${file.Quality} Torrent
-													</a>
-													<a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-															${file.Quality} Magnet
-													</a>
-											`).join('')}
-									</div>
-							</div>
-					</div>
+<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-105 hover:border-blue-500">
+    <div class="relative h-48 overflow-hidden">
+        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
+        </div>
+    </div>
+    <div class="p-3 space-y-2">
+        <div class="flex justify-between items-center text-xs">
+            <span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
+            <span class="text-green-400">${torrent.Rating || '-'} ★</span>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            ${torrent.Files.map(file => `
+                <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+                    ${file.Quality} Torrent
+                </a>
+                <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+                    ${file.Quality} Magnet
+                </a>
+            `).join('')}
+        </div>
+    </div>
+</div>
 					`;
 				} else if (website === 'nyaasi') {
 					torrentCard = `
-							<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
-									<div class="p-3 space-y-2">
-											<div class="flex justify-between items-center">
-													<h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
-													<span class="bg-gray-800 px-2 py-1 rounded text-xs">Nyaasi</span>
-											</div>
-											<div class="flex justify-between items-center text-xs text-gray-400">
-													<div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-													<div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
-											</div>
-											<div class="grid grid-cols-2 gap-2">
-													<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-															Magnet
-													</a>
-													<a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-															Torrent
-													</a>
-											</div>
-									</div>
-							</div>
+<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-105 hover:border-purple-500">
+    <div class="p-3 space-y-2">
+        <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
+            <span class="bg-gray-800 px-2 py-1 rounded text-xs">Nyaasi</span>
+        </div>
+        <div class="flex justify-between items-center text-xs text-gray-400">
+            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+                Magnet
+            </a>
+            <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+                Torrent
+            </a>
+        </div>
+    </div>
+</div>
 						`;
 				} else if (website === 'tgx') {
 					torrentCard = `
-					<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md transform transition-all hover:scale-105">
-							<div class="relative h-48 overflow-hidden">
-									<img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
-									<div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-											<h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
-									</div>
-							</div>
-							<div class="p-3 space-y-2">
-									<div class="flex justify-between items-center text-xs">
-											<span class="bg-gray-800 px-2 py-1 rounded">${torrent.Category || 'N/A'}</span>
-											<div class="flex items-center space-x-2">
-													<span>Size: ${torrent.Size || '-'}</span>
-													<span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
-											</div>
-									</div>
-									<div class="grid grid-cols-2 gap-2">
-											<a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-													Magnet
-											</a>
-											<a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-													Torrent
-											</a>
-									</div>
-							</div>
-					</div>
+<div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
+    <div class="relative h-48 overflow-hidden">
+        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
+        </div>
+    </div>
+    <div class="p-3 space-y-2">
+        <div class="flex justify-between items-center text-xs">
+            <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category).split(' ')[1] || 'N/A'}</span>
+            <div class="flex items-center space-x-2">
+                <span>Size: ${torrent.Size || '-'}</span>
+                <span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
+                Magnet
+            </a>
+            <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
+                Torrent
+            </a>
+        </div>
+    </div>
+</div>
 					`;
 				}
 				resultsDiv.innerHTML += torrentCard;
@@ -200,45 +216,49 @@
 		}
 
 		function renderPagination() {
-			const paginationContainer = document.getElementById('paginationContainer');
-			paginationContainer.innerHTML = '';
+				const paginationContainer = document.getElementById('paginationContainer');
+				paginationContainer.innerHTML = '';
 
-			if (totalPages > 1) {
-				// Previous button
-				const prevButton = document.createElement('button');
-				prevButton.innerHTML = '&#8592;'; // Left arrow
-				prevButton.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
-				prevButton.disabled = currentPage === 1;
-				prevButton.addEventListener('click', () => {
-					if (currentPage > 1) {
-						currentPage--;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
-					}
-				});
-				paginationContainer.appendChild(prevButton);
+				if (totalPages > 1) {
+					// Previous button
+					const prevButton = document.createElement('button');
+					prevButton.innerHTML = '&#8592;'; // Left arrow
+					prevButton.className = `px-3 py-1 rounded-md ${currentPage === 1
+						? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+						: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
+					prevButton.disabled = currentPage === 1;
+					prevButton.addEventListener('click', () => {
+						if (currentPage > 1) {
+							currentPage--;
+							renderResults(document.getElementById('website').value);
+							renderPagination();
+						}
+					});
+					paginationContainer.appendChild(prevButton);
 
-				// Page number indicator
-				const pageIndicator = document.createElement('span');
-				pageIndicator.className = 'px-3 py-1 bg-gray-200 rounded text-sm';
-				pageIndicator.textContent = `${currentPage} / ${totalPages}`;
-				paginationContainer.appendChild(pageIndicator);
+					// Page number indicator
+					const pageIndicator = document.createElement('span');
+					pageIndicator.className = 'px-3 py-1 bg-gray-700 text-white rounded-md text-sm';
+					pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+					paginationContainer.appendChild(pageIndicator);
 
-				// Next button
-				const nextButton = document.createElement('button');
-				nextButton.innerHTML = '&#8594;'; // Right arrow
-				nextButton.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
-				nextButton.disabled = currentPage === totalPages;
-				nextButton.addEventListener('click', () => {
-					if (currentPage < totalPages) {
-						currentPage++;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
-					}
-				});
-				paginationContainer.appendChild(nextButton);
+					// Next button
+					const nextButton = document.createElement('button');
+					nextButton.innerHTML = '&#8594;'; // Right arrow
+					nextButton.className = `px-3 py-1 rounded-md ${currentPage === totalPages
+						? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+						: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
+					nextButton.disabled = currentPage === totalPages;
+					nextButton.addEventListener('click', () => {
+						if (currentPage < totalPages) {
+							currentPage++;
+							renderResults(document.getElementById('website').value);
+							renderPagination();
+						}
+					});
+					paginationContainer.appendChild(nextButton);
+				}
 			}
-		}
 
 		// Initial search on page load
 		searchTorrents();
