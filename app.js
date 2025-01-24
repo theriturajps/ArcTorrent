@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const torrent1337x = require('./torrent/1337x');
+const torrentYts = require('./torrent/yts');
 
 
 const app = express();
@@ -40,7 +41,26 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				})
 		}
 	}
-	
+
+	if (website === 'yts') {
+		torrentYts(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+
+			})
+	}
+
 	if (website === "all") {
 		combo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {

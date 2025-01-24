@@ -15,6 +15,7 @@
 				<input type="text" id="query" class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm focus:ring-2 focus:ring-blue-300" placeholder="Search torrents">
 				<select id="website" class="px-2 py-2 rounded-md border border-gray-300 text-sm">
 					<option value="1337x">1337x</option>
+					<option value="yts">yts</option>
 				</select>
 			</div>
 			<div class="flex space-x-2">
@@ -98,10 +99,29 @@
 										<div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
 								</div>
 								<div class="grid grid-cols-3 gap-2">
-										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet 1</a>
+										<a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
 								</div>
 						</div>
 						`;
+				} else if (website === 'yts') {
+					data.forEach(movie => {
+						resultsDiv.append(
+							`<div class="movie-card">
+                                <img src="${movie.Poster}" alt="${movie.Name}">
+                                <div class="movie-details">
+                                    <h5>${movie.Name}</h5>
+                                    <p><strong>Released Date:</strong> ${movie.ReleasedDate || 'N/A'}</p>
+                                    <p><strong>Genre:</strong> ${movie.Genre || 'N/A'}</p>
+                                    <p><strong>Rating:</strong> ${movie.Rating || 'N/A'}</p>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        ${movie.Files.map(file =>
+																					`<a href="${file.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">${file.Quality}</a>`
+																				).join('')}
+                                    </div>
+                                </div>
+                            </div>`
+						);
+					});
 				}
 
 				resultsDiv.innerHTML += torrentCard;
