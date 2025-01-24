@@ -1,10 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const scrap1337x = require('./scraper/1337x');
+const path = require('path')
 
 const app = express();
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, './public')));
+
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, './public/index.html'))
+})
 
 app.get('/api/:website/:query/:page?', async (req, res) => {
 	const { website, query, page } = req.params;
@@ -34,10 +39,6 @@ app.get('/api/:website/:query/:page?', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-if (require.main === module) {
-	app.listen(PORT, () => {
-		console.log(`Server running on port ${PORT}`);
-	});
-}
-
-module.exports = app;
+app.listen(PORT, () => {
+	console.log(`Server running on port ${PORT}`)
+})
