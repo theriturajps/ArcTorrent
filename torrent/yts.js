@@ -8,10 +8,9 @@ async function yts(query, page = '1') {
 	let all = []
 	let ALLURL = [];
 	if (page === '' || page === '1') {
-		// var url = "https://yts.mx/browse-movies/" + query + "/all/all/0/latest/0/all"
-		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest"
+		var url = "https://yts.mx/browse-movies/" + query + "/all/all/0/latest/0/all"
 	} else {
-		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest&page=" + page;
+		var url = "https://yts.mx/browse-movies/" + query + "/all/all/0/latest/0/all?page=" + page;
 	}
 	let html;
 	try {
