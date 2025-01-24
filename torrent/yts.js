@@ -1,6 +1,8 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
+
+
 async function yts(query, page = '1') {
 
 	let all = []
@@ -75,6 +77,12 @@ async function yts(query, page = '1') {
 	}))
 
 	return all;
+
+
+
 }
 
-module.exports = yts
+
+module.exports = {
+	yts: yts
+}

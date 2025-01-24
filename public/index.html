@@ -107,19 +107,19 @@
 					data.forEach(movie => {
 						resultsDiv.append(
 							`<div class="movie-card">
-                                <img src="${movie.Poster}" alt="${movie.Name}">
-                                <div class="movie-details">
-                                    <h5>${movie.Name}</h5>
-                                    <p><strong>Released Date:</strong> ${movie.ReleasedDate || 'N/A'}</p>
-                                    <p><strong>Genre:</strong> ${movie.Genre || 'N/A'}</p>
-                                    <p><strong>Rating:</strong> ${movie.Rating || 'N/A'}</p>
-                                    <div class="grid grid-cols-3 gap-2">
-                                        ${movie.Files.map(file =>
-																					`<a href="${file.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">${file.Quality}</a>`
-																				).join('')}
-                                    </div>
-                                </div>
-                            </div>`
+								<img src="${movie.Poster}" alt="${movie.Name}">
+								<div class="movie-details">
+								    <h5>${movie.Name}</h5>
+								    <p><strong>Released Date:</strong> ${movie.ReleasedDate || 'N/A'}</p>
+								    <p><strong>Genre:</strong> ${movie.Genre || 'N/A'}</p>
+								    <p><strong>Rating:</strong> ${movie.Rating || 'N/A'}</p>
+								    <div class="grid grid-cols-3 gap-2">
+								        ${movie.Files.map(file =>
+													`<a href="${file.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">${file.Quality}</a>`
+												).join('')}
+								    </div>
+								</div>
+								</div>`
 						);
 					});
 				}

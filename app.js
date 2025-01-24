@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const torrent1337x = require('./torrent/1337x');
-const torrentYts = require('./torrent/yts');
+const scrapYts = require('./torrent/yts');
 
 
 const app = express();
@@ -20,7 +20,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	if (website === '1337x') {
 		if (page > 50) {
 			return res.json({
-				error: 'Please enter page  value less than 51 to get the result :)'
+				error: 'Please enter page value less than 51 to get the result :)'
 			})
 		} else {
 			torrent1337x(query, page)
@@ -43,7 +43,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	}
 
 	if (website === 'yts') {
-		torrentYts(query, page)
+		scrapYts.yts(query, page)
 			.then((data) => {
 				if (data === null) {
 					return res.json({
@@ -72,7 +72,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			}
 		})
 
-	} else if (website !== '1337x' && website !== 'all') {
+	} else if (website !== '1337x' && website !== 'all' && website !== 'yts') {
 		return res.json({
 			error: 'please select 1337x | all (to scrap from every site)'
 		})
