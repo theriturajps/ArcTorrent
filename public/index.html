@@ -140,7 +140,7 @@
     <div class="p-3 space-y-2">
     <div class="flex justify-between items-center text-xs">
         <span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
-        <span class="text-green-400">${torrent.Rating || '-'} ★</span>
+        <span class="text-green-400">${torrent.Language || 'N/A'}</span>
     </div>
     <div class="grid grid-cols-2 gap-2">
         ${torrent.Files.map(file => `
