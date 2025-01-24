@@ -1,8 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-
-
 async function yts(query, page = '1') {
 
 	let all = []
@@ -57,7 +55,7 @@ async function yts(query, page = '1') {
 		data['Runtime'] = $('div .tech-spec-info').find('div .row').eq(1).find('div .tech-spec-element').eq(2).text().trim();
 		data['Language'] = $('div .tech-spec-info').find('div .row').eq(0).find('div .tech-spec-element').eq(2).text().trim();
 		data['Url'] = url;
-		data['Poster'] = $('div #movie-poster').eq(0).find('img').attr('src');
+		data['Poster'] = ('https://en.yts-official.mx' + $('div #movie-poster').eq(0).find('img').attr('src'));
 
 		$('.modal-download > div:nth-child(1) div.modal-content').each((i, el) => {
 			$('div.modal-torrent').each((_, ele) => {
@@ -77,10 +75,7 @@ async function yts(query, page = '1') {
 
 	return all;
 
-
-
 }
-
 
 module.exports = {
 	yts: yts
