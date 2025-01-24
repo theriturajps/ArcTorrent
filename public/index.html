@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ArcTorrent</title>
+	<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
+	<main class="flex-grow container mx-auto px-4 py-6">
+		<div class="max-w-sm mx-auto space-y-3">
+			<div class="flex space-x-2">
+				<input type="text" id="query"
+					class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm focus:ring-2 focus:ring-blue-300"
+					placeholder="Search torrents">
+				<select id="website" class="px-2 py-2 rounded-md border border-gray-300 text-sm">
+					<option value="1337x">1337x</option>
+				</select>
+			</div>
+			<div class="flex space-x-2">
+				<input type="number" id="page" class="flex-grow px-2 py-2 rounded-md border border-gray-300 text-sm"
+					placeholder="Page" min="1">
+				<button onclick="searchTorrents()"
+					class="px-4 py-2 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition duration-200">Search</button>
+			</div>
+		</div>
+
+		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+			<!-- Torrent cards will be generated here -->
+		</div>
+
+		<div id="paginationContainer" class="flex justify-center items-center space-x-2 mt-6">
+			<!-- Pagination buttons will be dynamically added here -->
+		</div>
+	</main>
+
+	<div id="spinner-container"
+		class="fixed top-0 left-0 w-full h-full bg-white bg-opacity-75 flex justify-center items-center z-50"
+		style="display: none;">
+		<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+	</div>
+
+	<script>
+		let currentPage = 1;
+		let totalPages = 0;
+		let torrents = [];
+
+		async function searchTorrents(page = 1) {
+			const query = document.getElementById('query').value;
+			const website = document.getElementById('website').value;
+			const resultsDiv = document.getElementById('results');
+			const spinnerContainer = document.getElementById('spinner-container');
+
+			if (!query) {
+				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
+				return;
+			}
+
+			spinnerContainer.style.display = 'flex';
+
+			let apiUrl = `/api/${website}/${query}/${page}`;
+
+			try {
+				const response = await fetch(apiUrl);
+				torrents = await response.json();
+
+				if (!torrents || torrents.length === 0) {
+					resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
+					return;
+				}
+
+				currentPage = page;
+				totalPages = Math.ceil(torrents.length / 10);
+				renderResults(website);
+				renderPagination();
+			} catch {
+				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
+			} finally {
+				spinnerContainer.style.display = 'none';
+			}
+		}
+
+		function renderResults(website) {
+			const resultsDiv = document.getElementById('results');
+			resultsDiv.innerHTML = '';
+
+			const startIndex = (currentPage - 1) * 10;
+			const endIndex = startIndex + 10;
+			const pageResults = torrents.slice(startIndex, endIndex);
+
+			pageResults.forEach(torrent => {
+				let torrentCard = '';
+				if (website === '1337x') {
+					torrentCard = `
+                        <div class="bg-white border rounded-md p-3 text-sm space-y-2">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-bold text-blue-700 truncate max-w-[70%]">${torrent.Name}</h3>
+                                <span class="bg-gray-200 text-xs px-2 py-0.5 rounded">${torrent.Category || 'N/A'}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+                                <div>Seeds: <span class="text-green-600 font-bold">${torrent.Seeders || '-'}</span></div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <a href="${torrent.Magnet}" class="block text-center bg-blue-500 text-white py-1.5 rounded text-xs hover:bg-blue-600">Magnet</a>
+                            </div>
+                        </div>
+                    `;
+				}
+
+				resultsDiv.innerHTML += torrentCard;
+			});
+		}
+
+		function renderPagination() {
+			const paginationContainer = document.getElementById('paginationContainer');
+			paginationContainer.innerHTML = '';
+
+			if (totalPages > 1) {
+				const prevButton = document.createElement('button');
+				prevButton.innerHTML = '&#8592;';
+				prevButton.className = `px-3 py-1 rounded ${currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
+				prevButton.disabled = currentPage === 1;
+				prevButton.addEventListener('click', () => {
+					if (currentPage > 1) {
+						currentPage--;
+						renderResults(document.getElementById('website').value);
+						renderPagination();
+					}
+				});
+				paginationContainer.appendChild(prevButton);
+
+				const pageIndicator = document.createElement('span');
+				pageIndicator.className = 'px-3 py-1 bg-gray-200 rounded text-sm';
+				pageIndicator.textContent = `${currentPage} / ${totalPages}`;
+				paginationContainer.appendChild(pageIndicator);
+
+				const nextButton = document.createElement('button');
+				nextButton.innerHTML = '&#8594;';
+				nextButton.className = `px-3 py-1 rounded ${currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'}`;
+				nextButton.disabled = currentPage === totalPages;
+				nextButton.addEventListener('click', () => {
+					if (currentPage < totalPages) {
+						currentPage++;
+						renderResults(document.getElementById('website').value);
+						renderPagination();
+					}
+				});
+				paginationContainer.appendChild(nextButton);
+			}
+		}
+
+		searchTorrents();
+	</script>
+</body>
+
+</html>
