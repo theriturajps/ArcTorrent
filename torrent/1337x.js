@@ -60,6 +60,4 @@ async function torrent1337x(query = '', page = '1') {
 
 	return allTorrent
 }
-module.exports = {
-	torrent1337x: torrent1337x
-}
+module.exports = torrent1337x

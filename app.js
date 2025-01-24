@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const scrap1337x = require('./torrent/1337x');
+const torrent1337x = require('./torrent/1337x');
 
 
 const app = express();
@@ -22,7 +22,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				error: 'Please enter page  value less than 51 to get the result :)'
 			})
 		} else {
-			scrap1337x.torrent1337x(query, page)
+			torrent1337x(query, page)
 				.then((data) => {
 					if (data === null) {
 						return res.json({
