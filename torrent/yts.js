@@ -8,9 +8,9 @@ async function yts(query, page = '1') {
 	let all = []
 	let ALLURL = [];
 	if (page === '' || page === '1') {
-		var url = "https://yts.mx/browse-movies/" + query + "/all/all/0/latest/0/all"
+		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest"
 	} else {
-		var url = "https://yts.mx/browse-movies/" + query + "/all/all/0/latest/0/all?page=" + page;
+		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest&page=" + page;
 	}
 	let html;
 	try {
@@ -23,7 +23,7 @@ async function yts(query, page = '1') {
 
 	const $ = cheerio.load(html.data);
 	$('div.browse-movie-bottom').each((_, element) => {
-		let url = $(element).find('a').attr('href');
+		let url = `https://en.yts-official.mx` + $(element).find('a').attr('href');
 		ALLURL.push(url);
 	})
 
