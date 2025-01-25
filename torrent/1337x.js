@@ -2,7 +2,7 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 
 async function torrent1337x(query = '', page = '1') {
-	const allTorrents = [];
+
 	const baseUrl = 'https://1337xx.to';
 	const searchUrl = `${baseUrl}/search/${encodeURIComponent(query)}/${page}/`;
 
@@ -16,12 +16,12 @@ async function torrent1337x(query = '', page = '1') {
 
 		const $ = cheerio.load(searchResponse.data);
 
-		// Select torrent detail page links
+		// Select torrent detail page links for the specific page
 		const detailLinks = $('td.name a.row-item-name').map((_, element) =>
 			`${baseUrl}${$(element).attr('href')}`
 		).get();
 
-		// Fetch details for each torrent
+		// Fetch details for each torrent on the page
 		const torrentDetails = await Promise.all(detailLinks.map(async (url) => {
 			try {
 				const detailResponse = await axios.get(url, {
@@ -63,7 +63,7 @@ async function torrent1337x(query = '', page = '1') {
 			}
 		}));
 
-		// Filter out any null results and add to allTorrents
+		// Filter out any null results and return page-specific results
 		return torrentDetails.filter(torrent => torrent !== null);
 
 	} catch (error) {
