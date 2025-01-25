@@ -39,7 +39,8 @@
 					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white"
 					placeholder="Page" min="1" value="1">
 				<button onclick="searchTorrents()"
-					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"> Search
+					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+					Search
 				</button>
 			</div>
 		</div>
@@ -60,13 +61,13 @@
 
 	<script>
 		let currentPage = 1;
-		let totalPages = 0;
-		let torrents = [];
+		let totalResults = 0;
+		let resultsPerPage = 20; // Adjust this based on the API's actual results per page
 
 		async function searchTorrents() {
 			const query = document.getElementById('query').value;
 			const website = document.getElementById('website').value;
-			const page = document.getElementById('page').value;
+			const page = parseInt(document.getElementById('page').value);
 			const resultsDiv = document.getElementById('results');
 			const spinnerContainer = document.getElementById('spinner-container');
 
@@ -81,6 +82,9 @@
 
 			try {
 				const response = await fetch(apiUrl);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
 				const data = await response.json();
 
 				if (!data || data.length === 0) {
@@ -88,20 +92,19 @@
 					return;
 				}
 
-				torrents = data;
-				currentPage = parseInt(page);
-				totalPages = Math.ceil(torrents.length / 10);
-				renderResults(website);
+				currentPage = page;
+				totalResults = data.length; // This might need adjustment based on the API response structure
+				renderResults(website, data);
 				renderPagination();
 			} catch (error) {
-				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
+				resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results: ${error.message}</div>`;
 				console.error('Error fetching data:', error);
 			} finally {
 				spinnerContainer.style.display = 'none';
 			}
 		}
 
-		function renderResults(website) {
+		function renderResults(website, torrents) {
 			const resultsDiv = document.getElementById('results');
 			resultsDiv.innerHTML = '';
 
@@ -211,6 +214,8 @@
 		function renderPagination() {
 			const paginationContainer = document.getElementById('paginationContainer');
 			paginationContainer.innerHTML = '';
+
+			const totalPages = Math.ceil(totalResults / resultsPerPage);
 
 			if (totalPages > 1) {
 				// Previous button
