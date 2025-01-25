@@ -168,9 +168,7 @@
                                 <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
                             </div>
                             <div class="grid grid-cols-1 gap-2">
-                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-                                    Magnet
-                                </a>
+                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
                             </div>
                         </div>
                     </div>
@@ -191,12 +189,8 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             ${torrent.Files.map(file => `
-                                <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-                                    ${file.Quality} Torrent
-                                </a>
-                                <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-                                    ${file.Quality} Magnet
-                                </a>
+                                <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">${file.Quality} Torrent</a>
+                                <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">${file.Quality} Magnet</a>
                             `).join('')}
                         </div>
                         </div>
@@ -241,12 +235,8 @@
                                 </div>
                             </div>
                             <div class="grid grid-cols-2 gap-2">
-                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-                                    Magnet
-                                </a>
-                                <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-                                    Torrent
-                                </a>
+                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
+                                <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
                             </div>
                         </div>
                     </div>
@@ -257,17 +247,17 @@
 		}
 
 		// Initial search on page load
-	document.addEventListener('DOMContentLoaded', () => {
-		const resultScrollSection = document.getElementById('resultScrollSection');
-		const scrollProgress = document.getElementById('scrollProgress');
+		document.addEventListener('DOMContentLoaded', () => {
+			const resultScrollSection = document.getElementById('resultScrollSection');
+			const scrollProgress = document.getElementById('scrollProgress');
 
-		resultScrollSection.addEventListener('scroll', () => {
-			const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
-			const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
+			resultScrollSection.addEventListener('scroll', () => {
+				const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
+				const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
 
-			scrollProgress.style.width = `${scrollPercentage}%`;
+				scrollProgress.style.width = `${scrollPercentage}%`;
+			});
 		});
-	});
 
 		// Add event listener for 'Enter' key press
 		document.getElementById('query').addEventListener('keypress', function (event) {
