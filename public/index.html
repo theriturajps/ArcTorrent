@@ -23,7 +23,9 @@
 	<main class="flex-grow container mx-auto px-2 py-3">
 		<div class="max-w-xl mx-auto space-y-2">
 			<div class="flex space-x-2">
-				<input type="text" id="query" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500" placeholder="Search torrents">
+				<input type="text" id="query"
+					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500"
+					placeholder="Search torrents">
 				<select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
 					<option value="1337x">1337x</option>
 					<option value="nyaasi">Nyaasi</option>
@@ -33,17 +35,23 @@
 			</div>
 
 			<div class="flex space-x-2">
-				<input type="number" id="page" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white" placeholder="Page" min="1" value="1">
-				<button onclick="searchTorrents()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
+				<input type="number" id="page"
+					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white"
+					placeholder="Page" min="1" value="1">
+				<button onclick="searchTorrents()"
+					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
 			</div>
 		</div>
 
-		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3"></div>
+		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3">
+		</div>
 	</main>
 
 	<footer class="bg-gray-800 py-2 text-center text-xs text-gray-400">© 2024 ArcTorrent</footer>
 
-	<div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
+	<div id="spinner-container"
+		class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50"
+		style="display: none;">
 		<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
 	</div>
 
@@ -78,8 +86,7 @@
 
 				renderResults(website, data);
 			} catch (error) {
-				resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results: ${error.message}</div>`;
-				console.error('Error fetching data:', error);
+				resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results</div>`;
 			} finally {
 				spinnerContainer.style.display = 'none';
 			}
