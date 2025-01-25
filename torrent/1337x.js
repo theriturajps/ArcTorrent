@@ -6,9 +6,6 @@ async function torrent1337x(query = '', page = '1') {
 	const allTorrent = [];
 	let html;
 	const url = 'https://1337xx.to/search/' + query + '/' + page + '/';
-
-	console.log(url);
-	
 	try {
 		html = await axios.get(url);
 	} catch {
