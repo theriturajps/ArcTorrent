@@ -68,10 +68,6 @@
 			const website = document.getElementById('website').value;
 			const resultsDiv = document.getElementById('results');
 			const spinnerContainer = document.getElementById('spinner-container');
-			const pageInput = document.getElementById('page');
-
-			// Use page input if provided, otherwise use default
-			const searchPage = pageInput.value || page;
 
 			if (!query) {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
@@ -80,31 +76,22 @@
 
 			spinnerContainer.style.display = 'flex';
 
-			let apiUrl = `/api/${website}/${query}/${searchPage}`;
+			let apiUrl = `/api/${website}/${query}/${page}`;
 
 			try {
 				const response = await fetch(apiUrl);
-				const responseData = await response.json();
-
-				// Check for error responses
-				if (responseData.error) {
-					resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">${responseData.error}</div>`;
-					return;
-				}
-
-				torrents = responseData;
+				torrents = await response.json();
 
 				if (!torrents || torrents.length === 0) {
 					resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
 					return;
 				}
 
-				currentPage = parseInt(searchPage);
+				currentPage = page;
 				totalPages = Math.ceil(torrents.length / 10);
 				renderResults(website);
 				renderPagination();
-			} catch (error) {
-				console.error('Search error:', error);
+			} catch {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
 			} finally {
 				spinnerContainer.style.display = 'none';
@@ -120,24 +107,18 @@
 			const pageResults = torrents.slice(startIndex, endIndex);
 
 			pageResults.forEach(torrent => {
-				let torrentCard = createTorrentCard(website, torrent);
-				resultsDiv.innerHTML += torrentCard;
-			});
-		}
-
-		function createTorrentCard(website, torrent) {
-			switch (website) {
-				case '1337x':
-					return `
+				let torrentCard = '';
+				if (website === '1337x') {
+					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-105 hover:border-red-500">
     <div class="p-3 space-y-2">
         <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${escapeHtml(torrent.Name)}</h3>
-            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${escapeHtml(torrent.Category || 'N/A')}</span>
+            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
+            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
         </div>
         <div class="flex justify-between items-center text-xs text-gray-400">
-            <div>Size: <span class="font-medium">${escapeHtml(torrent.Size || '-')}</span></div>
-            <div>Seeds: <span class="text-green-400 font-bold">${escapeHtml(torrent.Seeders || '-')}</span></div>
+            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
         </div>
         <div class="grid grid-cols-1 gap-2">
             <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
@@ -145,68 +126,71 @@
             </a>
         </div>
     </div>
-</div>`;
-				case 'yts':
-					return `
+</div>
+						`;
+				} else if (website === 'yts') {
+					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-105 hover:border-blue-500">
     <div class="relative h-48 overflow-hidden">
-        <img src="${escapeHtml(torrent.Poster)}" alt="${escapeHtml(torrent.Name)}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-            <h3 class="text-sm font-bold text-blue-300 truncate">${escapeHtml(torrent.Name)}</h3>
+            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
         </div>
     </div>
     <div class="p-3 space-y-2">
     <div class="flex justify-between items-center text-xs">
-        <span class="bg-gray-800 px-2 py-1 rounded">${escapeHtml(torrent.ReleasedDate || 'N/A')}</span>
-        <span class="text-green-400">${escapeHtml(torrent.Language || 'N/A')}</span>
+        <span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
+        <span class="text-green-400">${torrent.Language || 'N/A'}</span>
     </div>
     <div class="grid grid-cols-2 gap-2">
         ${torrent.Files.map(file => `
             <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">
-                ${escapeHtml(file.Quality)} Torrent
+                ${file.Quality} Torrent
             </a>
             <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">
-                ${escapeHtml(file.Quality)} Magnet
+                ${file.Quality} Magnet
             </a>
         `).join('')}
     </div>
     </div>
-</div>`;
-				case 'nyaasi':
-					return `
+</div>
+					`;
+				} else if (website === 'nyaasi') {
+					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-105 hover:border-purple-500">
     <div class="p-3 space-y-2">
         <div class="flex justify-between items-center">
-            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${escapeHtml(torrent.Name)}</h3>
+            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
+        </div>
+				<div class="flex justify-between items-center text-xs text-gray-400">
+            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category}</span>
         </div>
         <div class="flex justify-between items-center text-xs text-gray-400">
-            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${escapeHtml(torrent.Category)}</span>
-        </div>
-        <div class="flex justify-between items-center text-xs text-gray-400">
-            <div>Size: <span class="font-medium">${escapeHtml(torrent.Size || '-')}</span></div>
-            <div>Seeds: <span class="text-green-400 font-bold">${escapeHtml(torrent.Seeders || '-')}</span></div>
+            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
         </div>
         <div class="grid grid-cols-2 gap-2">
             <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
             <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
         </div>
     </div>
-</div>`;
-				case 'tgx':
-					return `
+</div>
+						`;
+				} else if (website === 'tgx') {
+					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
     <div class="relative h-48 overflow-hidden">
-        <img src="${escapeHtml(torrent.Poster)}" alt="${escapeHtml(torrent.Name)}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-            <h3 class="text-sm font-bold text-blue-300 truncate">${escapeHtml(torrent.Name)}</h3>
+            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
         </div>
     </div>
     <div class="p-3 space-y-2">
         <div class="flex justify-between items-center text-xs">
-            <span class="bg-gray-800 px-2 py-1 rounded">${escapeHtml((torrent.Category).split(' ')[1] || 'N/A')}</span>
+            <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category).split(' ')[1] || 'N/A'}</span>
             <div class="flex items-center space-x-2">
-                <span>Size: ${escapeHtml(torrent.Size || '-')}</span>
-                <span class="text-green-400">Seeds: ${escapeHtml(torrent.Seeders || '-')}</span>
+                <span>Size: ${torrent.Size || '-'}</span>
+                <span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
             </div>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -218,27 +202,11 @@
             </a>
         </div>
     </div>
-</div>`;
-				default:
-					return '';
-			}
-		}
-
-		function escapeHtml(unsafe) {
-			return unsafe
-				? unsafe.toString().replace(/[&<"']/g, function (m) {
-					switch (m) {
-						case '&':
-							return '&amp;';
-						case '<':
-							return '&lt;';
-						case '"':
-							return '&quot;';
-						default:
-							return '&#039;';
-					}
-				})
-				: '';
+</div>
+					`;
+				}
+				resultsDiv.innerHTML += torrentCard;
+			});
 		}
 
 		function renderPagination() {
