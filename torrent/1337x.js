@@ -1,41 +1,49 @@
 const axios = require('axios');
+const cheerio = require('cheerio');
 
 async function scrapeTorrents(query, page = 1) {
-	try {
-		// Fetch search results page
-		const searchUrl = `https://1337xx.to/search/${query}/${page}/`;
-		const searchResponse = await axios.get(searchUrl);
+	// Construct the search URL
+	const searchUrl = `https://1337xx.to/search/${query}/${page}/`;
 
-		// Extract torrent detail page links using regex
-		const torrentLinks = searchResponse.data.match(/\/torrent\/[^"]+/g)
-			.map(link => `https://1337xx.to${link}`);
+	try {
+		// Fetch the search results page
+		const searchResponse = await axios.get(searchUrl);
+		const $ = cheerio.load(searchResponse.data);
+
+		// Extract torrent detail page links
+		const torrentLinks = $('td.name a').map((_, el) =>
+			'https://1337xx.to' + $(el).next().attr('href')
+		).get();
 
 		// Scrape details for each torrent
-		const torrents = await Promise.all(torrentLinks.map(async (url) => {
-			try {
-				const response = await axios.get(url);
-				const html = response.data;
+		const torrents = await Promise.all(torrentLinks.map(async (link) => {
+			const torrentPage = await axios.get(link);
+			const $torrent = cheerio.load(torrentPage.data);
 
-				return {
-					name: html.match(/<h1>(.*?)<\/h1>/)?.[1] || 'Unknown',
-					magnet: html.match(/href="(magnet:[^"]+)"/)?.[1] || '',
-					size: html.match(/Size.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || 'N/A',
-					seeders: html.match(/Seeders.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '0',
-					leechers: html.match(/Leechers.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '0',
-					url: url
-				};
-			} catch (error) {
-				console.error(`Error scraping ${url}:`, error.message);
-				return null;
-			}
+			return {
+				name: $torrent('.box-info-heading h1').text().trim(),
+				magnet: $torrent('.clearfix ul li a').first().attr('href') || '',
+				poster: getPosterUrl($torrent),
+				category: $torrent('div .clearfix ul li span').first().text(),
+				size: $torrent('div .clearfix ul li span').eq(3).text(),
+				seeders: $torrent('div .clearfix ul li span').eq(8).text(),
+				leechers: $torrent('div .clearfix ul li span').eq(9).text(),
+				url: link
+			};
 		}));
 
-		// Filter out any failed scrapes
-		return torrents.filter(torrent => torrent !== null);
+		return torrents;
 	} catch (error) {
-		console.error('Search error:', error.message);
-		return [];
+		console.error('Error scraping torrents:', error);
+		return null;
 	}
+}
+
+// Helper function to get poster URL
+function getPosterUrl($) {
+	const poster = $('div.torrent-image img').attr('src');
+	if (!poster) return '';
+	return poster.startsWith('http') ? poster : 'https:' + poster;
 }
 
 module.exports = scrapeTorrents;
