@@ -12,7 +12,9 @@
 	<header class="bg-gray-800 shadow-md py-2">
 		<div class="container mx-auto px-2 flex items-center justify-between">
 			<h1 class="text-lg font-bold text-blue-400 flex items-center">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
+					<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" />
+				</svg>
 				<a href="/">ArcTorrent</a>
 			</h1>
 		</div>
@@ -64,8 +66,12 @@
 		async function searchTorrents(page = 1) {
 			const query = document.getElementById('query').value;
 			const website = document.getElementById('website').value;
+			const pageInput = document.getElementById('page').value;
 			const resultsDiv = document.getElementById('results');
 			const spinnerContainer = document.getElementById('spinner-container');
+
+			// Use page input if provided, otherwise use the default page parameter
+			page = pageInput ? parseInt(pageInput) : page;
 
 			if (!query) {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
@@ -78,7 +84,15 @@
 
 			try {
 				const response = await fetch(apiUrl);
-				torrents = await response.json();
+				const data = await response.json();
+
+				// Check for error responses
+				if (data.error) {
+					resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">${data.error}</div>`;
+					return;
+				}
+
+				torrents = data;
 
 				if (!torrents || torrents.length === 0) {
 					resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
@@ -89,7 +103,7 @@
 				totalPages = Math.ceil(torrents.length / 10);
 				renderResults(website);
 				renderPagination();
-			} catch {
+			} catch (error) {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
 			} finally {
 				spinnerContainer.style.display = 'none';
@@ -221,9 +235,7 @@
 				prevButton.disabled = currentPage === 1;
 				prevButton.addEventListener('click', () => {
 					if (currentPage > 1) {
-						currentPage--;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
+						searchTorrents(currentPage - 1);
 					}
 				});
 				paginationContainer.appendChild(prevButton);
@@ -243,9 +255,7 @@
 				nextButton.disabled = currentPage === totalPages;
 				nextButton.addEventListener('click', () => {
 					if (currentPage < totalPages) {
-						currentPage++;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
+						searchTorrents(currentPage + 1);
 					}
 				});
 				paginationContainer.appendChild(nextButton);
