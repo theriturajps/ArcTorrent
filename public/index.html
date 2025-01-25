@@ -88,8 +88,7 @@
         <header class="bg-gray-800 shadow-md py-2">
             <div class="container mx-auto px-2 flex items-center justify-between">
                 <h1 class="text-lg font-bold text-blue-400 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24"
-                        fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" />
                     </svg>
                     <a href="/">ArcTorrent</a>
@@ -100,11 +99,8 @@
         <main class="container mx-auto px-2 py-3 flex-grow flex flex-col">
             <div class="search-container space-y-2">
                 <div class="flex space-x-2">
-                    <input type="text" id="query"
-                        class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500"
-                        placeholder="Search torrents">
-                    <select id="website"
-                        class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
+                    <input type="text" id="query" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500" placeholder="Search torrents">
+                    <select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
                         <option value="1337x">1337x</option>
                         <option value="nyaasi">Nyaasi</option>
                         <option value="tgx">Torrent Galaxy</option>
@@ -112,31 +108,23 @@
                     </select>
                 </div>
                 <div class="flex space-x-2">
-                    <input type="number" id="page"
-                        class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white"
-                        placeholder="Page" min="1" value="1">
-                    <button onclick="searchTorrents()"
-                        class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
+                    <input type="number" id="page" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white" placeholder="Page" min="1" value="1">
+                    <button onclick="searchTorrents()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
                 </div>
             </div>
             <div id="resultScrollSection" class="mt-3 flex-grow overflow-y-auto">
-                <div id="results"
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+                <div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
             </div>
         </main>
 
-        <footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent
-        </footer>
+        <footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 <a href="/">ArcTorrent</a></footer>
         <div class="scroll-progress" id="scrollProgress"></div>
     </div>
 
-    <div id="spinner-container"
-        class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50"
-        style="display: none;">
+    <div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
         <div class="flex flex-col items-center">
             <div class="website-logo-container mb-4 opacity-0 animate-pulse">
-                <svg xmlns="http://www.w3.org/2000/svg" id="website-logo" class="h-16 w-16" viewBox="0 0 24 24"
-                    fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" id="website-logo" class="h-16 w-16" viewBox="0 0 24 24" fill="currentColor">
                     <!-- Logo will be dynamically inserted here -->
                 </svg>
             </div>
@@ -370,7 +358,7 @@
 
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = `
-            <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 800px; margin: 0 auto;">
+            <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 615px; margin: 0 auto;">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -382,23 +370,23 @@
                     <div>
                         <h3 class="font-semibold text-blue-300 mb-2">Available Websites:</h3>
                         <ul class="text-xs text-gray-300 space-y-1">
-                            <li>• 1337x: General torrents</li>
-                            <li>• Nyaasi: Anime and Asian content</li>
-                            <li>• Torrent Galaxy: Diverse content library</li>
-                            <li>• YTS: Movies and HD releases</li>
+                            <li>➽ 1337x: General torrents</li>
+                            <li>➽ Nyaasi: Anime and Asian content</li>
+                            <li>➽ Torrent Galaxy: Diverse content library</li>
+                            <li>➽ YTS: Movies and HD releases</li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="font-semibold text-blue-300 mb-2">Keyboard Shortcuts:</h3>
                         <ul class="text-xs text-gray-300 space-y-1">
-                            <li>• <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + F</kbd>: Focus search bar</li>
-                            <li>• <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + Enter</kbd>: Trigger search</li>
-                            <li>• <kbd class="bg-gray-700 px-1 rounded">1-4</kbd>: Quick website selection</li>
+                            <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + F</kbd>: Focus search bar</li>
+                            <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + Enter</kbd>: Trigger search</li>
+                            <li>➽ <kbd class="bg-gray-700 px-1 rounded">1-4</kbd>: Quick website selection</li>
                         </ul>
                     </div>
                 </div>
                 <div class="text-xs text-gray-400 italic mt-4">
-                    Pro Tip: Press Enter after typing your search query for instant results
+                    <strong>Pro Tip:</strong> Press Enter after typing your search query for instant results
                 </div>
             </div>`;
     });
