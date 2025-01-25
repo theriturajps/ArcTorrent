@@ -241,7 +241,7 @@
                     </div>
                     `;
                 } else if (website === 'tgx') {
-					torrentCard = `
+										torrentCard = `
                     <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
                         <div class="relative h-48 overflow-hidden">
                             <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
@@ -264,10 +264,10 @@
                         </div>
                     </div>
                     `;
+								}
+						resultsDiv.innerHTML += torrentCard;
+					});
 				}
-				resultsDiv.innerHTML += torrentCard;
-			});
-		}
 
 		// Initial search on page load
 		document.addEventListener('DOMContentLoaded', () => {
