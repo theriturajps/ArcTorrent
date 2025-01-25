@@ -21,7 +21,7 @@ async function torrent1337x(query = '', page = '1') {
 				Magnet: $detail('.clearfix ul li a').attr('href') || '',
 				Url: link,
 				Poster: extractPoster($detail),
-				...extractDetails($detail)
+				...extractDetailsFromSpans($detail)
 			};
 
 			return torrentData;
@@ -40,21 +40,15 @@ function extractPoster($) {
 	return poster.startsWith('http') ? poster : 'https:' + poster;
 }
 
-function extractDetails($) {
-	const detailsText = $('div .clearfix ul li > span').map((_, el) => $(el).text()).get().join('|');
+function extractDetailsFromSpans($) {
+	const details = {};
+	const labels = ['Category', 'Type', 'Language', 'Size', 'UploadedBy', 'Downloads', 'LastChecked', 'DateUploaded', 'Seeders', 'Leechers'];
 
-	const details = {
-		Category: detailsText.match(/Category:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Type: detailsText.match(/Type:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Language: detailsText.match(/Language:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Size: detailsText.match(/Size:\s*([^|]+)/i)?.[1]?.trim() || '',
-		UploadedBy: detailsText.match(/Uploaded By:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Downloads: detailsText.match(/Downloads:\s*([^|]+)/i)?.[1]?.trim() || '',
-		LastChecked: detailsText.match(/Last Checked:\s*([^|]+)/i)?.[1]?.trim() || '',
-		DateUploaded: detailsText.match(/Date Uploaded:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Seeders: detailsText.match(/Seeders:\s*([^|]+)/i)?.[1]?.trim() || '',
-		Leechers: detailsText.match(/Leechers:\s*([^|]+)/i)?.[1]?.trim() || ''
-	};
+	$('div .clearfix ul li > span').each((index, element) => {
+		if (labels[index]) {
+			details[labels[index]] = $(element).text().trim();
+		}
+	});
 
 	return details;
 }
