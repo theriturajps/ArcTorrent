@@ -1,0 +1,63 @@
+*::-webkit-scrollbar {
+	display: none;
+}
+* {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+html,
+body {
+	height: 100%;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+}
+body {
+	overflow: hidden;
+}
+.app-container {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	overflow: hidden;
+}
+header {
+	flex-shrink: 0;
+}
+main {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+.search-container {
+	width: 100%;
+	max-width: 500px;
+	margin: 0 auto;
+	flex-shrink: 0;
+}
+.scroll-progress {
+	position: fixed;
+	bottom: 40px;
+	left: 0;
+	height: 3px;
+	background-color: #3B82F6;
+	width: 0;
+	z-index: 50;
+	transition: width 0.3s ease;
+}
+#resultScrollSection {
+	flex-grow: 1;
+	overflow-y: auto;
+	scroll-behavior: smooth;
+	padding: 0 10px;
+	margin-bottom: 35px;
+}
+footer {
+	flex-shrink: 0;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 50;
+}
