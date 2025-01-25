@@ -2,7 +2,7 @@
 	"name": "ArcTorrent",
 	"version": "1.0.0",
 	"engines": {
-		"node": "23.x"
+		"node": "22.x"
 	},
 	"scripts": {
 		"start": "node app.js",
