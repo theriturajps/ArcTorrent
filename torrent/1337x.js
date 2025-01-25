@@ -1,61 +1,41 @@
-const cheerio = require('cheerio');
 const axios = require('axios');
 
-async function torrent1337x(query = '', page = '1') {
+async function torrentScraper(query = '', page = '1') {
+	const url = `https://1337xx.to/search/${query}/${page}/`;
 
-	const allTorrent = [];
-	let html;
-	const url = 'https://1337xx.to/search/' + query + '/' + page + '/';
 	try {
-		html = await axios.get(url);
+		const response = await axios.get(url);
+		const html = response.data;
+
+		// Regex to extract torrent detail links
+		const linkMatches = html.matchAll(/href="(\/torrent\/[^"]+)"/g);
+		const detailLinks = [...linkMatches].map(match => `https://1337xx.to${match[1]}`);
+
+		const torrents = await Promise.all(detailLinks.map(async (link) => {
+			try {
+				const detailResponse = await axios.get(link);
+				const detailHtml = detailResponse.data;
+
+				return {
+					Name: detailHtml.match(/<h1 class="box-info-heading">(.*?)<\/h1>/)?.[1] || '',
+					Magnet: detailHtml.match(/href="(magnet:[^"]+)"/)?.[1] || '',
+					Poster: detailHtml.match(/src="(https?:\/\/[^"]+\.(?:jpg|png|jpeg))"/)?.[1] || '',
+					Category: detailHtml.match(/Category:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
+					Type: detailHtml.match(/Type:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
+					Size: detailHtml.match(/Size:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
+					Seeders: detailHtml.match(/Seeders:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
+					Leechers: detailHtml.match(/Leechers:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
+					Url: link
+				};
+			} catch {
+				return null;
+			}
+		}));
+
+		return torrents.filter(torrent => torrent !== null);
 	} catch {
-		return null;
+		return [];
 	}
-
-	const $ = cheerio.load(html.data)
-
-	const links = $('td.name').map((_, element) => {
-		var link = 'https://1337xx.to' + $(element).find('a').next().attr('href');
-		return link;
-
-	}).get();
-
-
-	await Promise.all(links.map(async (element) => {
-
-		const data = {};
-		const labels = ['Category', 'Type', 'Language', 'Size', 'UploadedBy', 'Downloads', 'LastChecked', 'DateUploaded', 'Seeders', 'Leechers'];
-		let html;
-		try {
-			html = await axios.get(element);
-		} catch {
-			return null;
-		}
-		const $ = cheerio.load(html.data);
-		data.Name = $('.box-info-heading h1').text().trim();
-		data.Magnet = $('.clearfix ul li a').attr('href') || "";
-		const poster = $('div.torrent-image img').attr('src');
-
-		if (typeof poster !== 'undefined') {
-			if (poster.startsWith('http')) {
-				data.Poster = poster;
-			}
-			else {
-				data.Poster = 'https:' + poster;
-			}
-		} else {
-			data.Poster = ''
-		}
-
-		$('div .clearfix ul li > span').each((i, element) => {
-			$list = $(element);
-			data[labels[i]] = $list.text();
-		})
-		data.Url = element
-
-		allTorrent.push(data)
-	}))
-
-	return allTorrent
 }
-module.exports = torrent1337x
+
+module.exports = torrentScraper;
