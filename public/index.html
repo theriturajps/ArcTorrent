@@ -123,173 +123,214 @@
     </div>
 
     <script>
-        const websiteLogos = {
-            '1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-            'nyaasi': '<path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2zm0 2.311L5 7.5v9l7 3.5 7-3.5v-9l-7-3.189z"/>',
-            'yts': '<path d="M21 3H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 9V7c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1zm-2 6H3v-2h7v2zm0-4H3V9h7v5zm9 4h-7v-2h7v2zm0-4h-7V9h7v5z"/>',
-            'tgx': '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v14h-2V5zm-5 0h2v14H7V5zm10 0h2v14h-2V5z"/>'
-        };
+    const websiteLogos = {
+        '1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+        'nyaasi': '<path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2zm0 2.311L5 7.5v9l7 3.5 7-3.5v-9l-7-3.189z"/>',
+        'yts': '<path d="M21 3H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 9V7c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1zm-2 6H3v-2h7v2zm0-4H3V9h7v5zm9 4h-7v-2h7v2zm0-4h-7V9h7v5z"/>',
+        'tgx': '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v14h-2V5zm-5 0h2v14H7V5zm10 0h2v14h-2V5z"/>'
+    };
 
-        async function searchTorrents() {
-            const query = document.getElementById('query').value;
-            const website = document.getElementById('website').value;
-            const page = parseInt(document.getElementById('page').value);
-            const resultsDiv = document.getElementById('results');
-            const spinnerContainer = document.getElementById('spinner-container');
-            const websiteLogo = document.getElementById('website-logo');
-            const currentWebsite = document.getElementById('current-website');
+    async function searchTorrents() {
+        const query = document.getElementById('query').value;
+        const website = document.getElementById('website').value;
+        const page = parseInt(document.getElementById('page').value);
+        const resultsDiv = document.getElementById('results');
+        const spinnerContainer = document.getElementById('spinner-container');
+        const websiteLogo = document.getElementById('website-logo');
+        const currentWebsite = document.getElementById('current-website');
 
-            if (!query) {
-                resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
+        // Validate input
+        if (!query.trim()) {
+            resultsDiv.innerHTML = `
+                <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    Please enter a search query
+                </div>
+            `;
+            return;
+        }
+
+        // Update logo and text based on selected website
+        websiteLogo.innerHTML = websiteLogos[website];
+        currentWebsite.textContent = website.toUpperCase();
+
+        spinnerContainer.style.display = 'flex';
+
+        let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                timeout: 10000 // 10 seconds timeout
+            });
+
+            // Network or server errors
+            if (!response.ok) {
+                throw new Error(`Network response error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Check for empty results
+            if (!data || data.length === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="text-center col-span-full text-blue-500 bg-blue-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        No results found for "${query}" on ${website.toUpperCase()}
+                    </div>
+                `;
                 return;
             }
 
-            // Update logo and text based on selected website
-            websiteLogo.innerHTML = websiteLogos[website];
-            currentWebsite.textContent = website.toUpperCase();
-
-            spinnerContainer.style.display = 'flex';
-
-            let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
-
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-
-                if (!data || data.length === 0) {
-                    resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
-                    return;
-                }
-
-                renderResults(website, data);
-            } catch (error) {
-                resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results</div>`;
-            } finally {
-                spinnerContainer.style.display = 'none';
-            }
+            renderResults(website, data);
+        } catch (error) {
+            console.error('Search error:', error);
+            resultsDiv.innerHTML = `
+                <div class="text-center col-span-full text-red-500 bg-red-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    Failed to load results. ${error.name === 'AbortError' ? 'Request timed out' : 'Please check your connection'}
+                </div>
+            `;
+        } finally {
+            spinnerContainer.style.display = 'none';
         }
+    }
 
-        function renderResults(website, torrents) {
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
+    function renderResults(website, torrents) {
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = '';
 
-            torrents.forEach(torrent => {
-                let torrentCard = '';
-                if (website === '1337x') {
-                    torrentCard = `
-                    <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-105 hover:border-red-500">
-                        <div class="p-3 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
-                                <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-xs text-gray-400">
-                                <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-                                <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
-                            </div>
-                            <div class="grid grid-cols-1 gap-2">
-                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
-                            </div>
+        torrents.forEach(torrent => {
+            let torrentCard = '';
+            if (website === '1337x') {
+                torrentCard = `
+                <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-105 hover:border-red-500">
+                    <div class="p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
+                            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category || 'N/A'}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+                            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+                        </div>
+                        <div class="grid grid-cols-1 gap-2">
+                            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
                         </div>
                     </div>
-                    `;
-                } else if (website === 'yts') {
-                    torrentCard = `
-                    <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-105 hover:border-blue-500">
-                        <div class="relative h-48 overflow-hidden">
-                            <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-                                <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
-                            </div>
+                </div>
+                `;
+            } else if (website === 'yts') {
+                torrentCard = `
+                <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-105 hover:border-blue-500">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
                         </div>
-                        <div class="p-3 space-y-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
-                            <span class="text-green-400">${torrent.Language || 'N/A'}</span>
+                    </div>
+                    <div class="p-3 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="bg-gray-800 px-2 py-1 rounded">${torrent.ReleasedDate || 'N/A'}</span>
+                        <span class="text-green-400">${torrent.Language || 'N/A'}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        ${torrent.Files.map(file => `
+                            <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">${file.Quality} Torrent</a>
+                            <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">${file.Quality} Magnet</a>
+                        `).join('')}
+                    </div>
+                    </div>
+                </div>
+                `;
+            } else if (website === 'nyaasi') {
+                torrentCard = `
+                <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-105 hover:border-purple-500">
+                    <div class="p-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-gray-400">
+                            <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+                            <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            ${torrent.Files.map(file => `
-                                <a href="${file.Torrent}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">${file.Quality} Torrent</a>
-                                <a href="${file.Magnet}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">${file.Quality} Magnet</a>
-                            `).join('')}
-                        </div>
+                            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
+                            <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
                         </div>
                     </div>
-                    `;
-                } else if (website === 'nyaasi') {
-                    torrentCard = `
-                    <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-105 hover:border-purple-500">
-                        <div class="p-3 space-y-2">
-                            <div class="flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
-                            </div>
-                            <div class="flex justify-between items-center text-xs text-gray-400">
-                                <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-xs text-gray-400">
-                                <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
-                                <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
-                                <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
-                            </div>
+                </div>
+                `;
+            } else if (website === 'tgx') {
+                torrentCard = `
+                <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
+                    <div class="relative h-48 overflow-hidden">
+                        <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
+                            <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
                         </div>
                     </div>
-                    `;
-                } else if (website === 'tgx') {
-										torrentCard = `
-                    <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
-                        <div class="relative h-48 overflow-hidden">
-                            <img src="${torrent.Poster}" alt="${torrent.Name}" class="w-full h-full object-cover opacity-70 hover:opacity-100">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
-                                <h3 class="text-sm font-bold text-blue-300 truncate">${torrent.Name}</h3>
+                    <div class="p-3 space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category).split(' ')[1] || 'N/A'}</span>
+                            <div class="flex items-center space-x-2">
+                                <span>Size: ${torrent.Size || '-'}</span>
+                                <span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
                             </div>
                         </div>
-                        <div class="p-3 space-y-2">
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category).split(' ')[1] || 'N/A'}</span>
-                                <div class="flex items-center space-x-2">
-                                    <span>Size: ${torrent.Size || '-'}</span>
-                                    <span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
-                                <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
-                            </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
+                            <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
                         </div>
                     </div>
-                    `;
-								}
-						resultsDiv.innerHTML += torrentCard;
-					});
-				}
+                </div>
+                `;
+            }
+            resultsDiv.innerHTML += torrentCard;
+        });
+    }
 
-		// Initial search on page load
-		document.addEventListener('DOMContentLoaded', () => {
-			const resultScrollSection = document.getElementById('resultScrollSection');
-			const scrollProgress = document.getElementById('scrollProgress');
+    // Initial search on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const resultScrollSection = document.getElementById('resultScrollSection');
+        const scrollProgress = document.getElementById('scrollProgress');
 
-			resultScrollSection.addEventListener('scroll', () => {
-				const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
-				const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
+        resultScrollSection.addEventListener('scroll', () => {
+            const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
+            const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
 
-				scrollProgress.style.width = `${scrollPercentage}%`;
-			});
-		});
+            scrollProgress.style.width = `${scrollPercentage}%`;
+        });
 
-		// Add event listener for 'Enter' key press
-		document.getElementById('query').addEventListener('keypress', function (event) {
-			if (event.key === 'Enter') {
-				event.preventDefault();
-				searchTorrents();
-			}
-		});
-	</script>
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = `
+            <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 700px; margin: 0 auto;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <h2 class="text-xl font-bold">Welcome to ArcTorrent</h2>
+                <p class="text-sm text-blue-200">
+                    Search across multiple torrent websites. Select a website, enter your query, and hit search!
+                </p>
+                <div class="text-xs text-gray-400 italic">
+                    Tip: You can also press Enter after typing your search query
+                </div>
+            </div>
+        `;
+    });
+
+    // Add event listener for 'Enter' key press
+    document.getElementById('query').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchTorrents();
+        }
+    });
+    </script>
 </body>
 
 </html>
