@@ -39,14 +39,14 @@
 					class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white"
 					placeholder="Page" min="1">
 				<button onclick="searchTorrents()"
-					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"> Search
+					class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+					Search
 				</button>
 			</div>
 		</div>
 
 		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3">
 		</div>
-
 		<div id="paginationContainer" class="flex justify-center items-center space-x-1 mt-3"></div>
 	</main>
 
@@ -64,29 +64,24 @@
 		let torrents = [];
 
 		async function searchTorrents(page = 1) {
-			const query = document.getElementById('query').value;
+			const query = document.getElementById('query').value || 'movies';
 			const website = document.getElementById('website').value;
-			const pageInput = document.getElementById('page').value;
 			const resultsDiv = document.getElementById('results');
 			const spinnerContainer = document.getElementById('spinner-container');
+			const pageInput = document.getElementById('page');
 
-			// Use page input if provided, otherwise use the default page parameter
-			page = pageInput ? parseInt(pageInput) : page;
-
-			if (!query) {
-				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
-				return;
+			if (!pageInput.value) {
+				pageInput.value = page;
 			}
 
 			spinnerContainer.style.display = 'flex';
 
-			let apiUrl = `/api/${website}/${query}/${page}`;
+			let apiUrl = `/api/${website}/${query}/${pageInput.value}`;
 
 			try {
 				const response = await fetch(apiUrl);
 				const data = await response.json();
 
-				// Check for error responses
 				if (data.error) {
 					resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">${data.error}</div>`;
 					return;
@@ -99,12 +94,13 @@
 					return;
 				}
 
-				currentPage = page;
+				currentPage = parseInt(pageInput.value);
 				totalPages = Math.ceil(torrents.length / 10);
 				renderResults(website);
 				renderPagination();
 			} catch (error) {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
+				console.error('Search error:', error);
 			} finally {
 				spinnerContainer.style.display = 'none';
 			}
@@ -139,7 +135,7 @@
         </div>
     </div>
 </div>
-						`;
+                    `;
 				} else if (website === 'yts') {
 					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-105 hover:border-blue-500">
@@ -166,7 +162,7 @@
     </div>
     </div>
 </div>
-					`;
+                    `;
 				} else if (website === 'nyaasi') {
 					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-105 hover:border-purple-500">
@@ -174,7 +170,7 @@
         <div class="flex justify-between items-center">
             <h3 class="text-sm font-bold text-blue-300 truncate max-w-[80%]">${torrent.Name}</h3>
         </div>
-				<div class="flex justify-between items-center text-xs text-gray-400">
+        <div class="flex justify-between items-center text-xs text-gray-400">
             <span class="bg-gray-800 px-2 py-1 rounded text-xs">${torrent.Category}</span>
         </div>
         <div class="flex justify-between items-center text-xs text-gray-400">
@@ -187,7 +183,7 @@
         </div>
     </div>
 </div>
-						`;
+                    `;
 				} else if (website === 'tgx') {
 					torrentCard = `
 <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-105 hover:border-green-500">
@@ -199,7 +195,7 @@
     </div>
     <div class="p-3 space-y-2">
         <div class="flex justify-between items-center text-xs">
-            <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category).split(' ')[1] || 'N/A'}</span>
+            <span class="bg-gray-800 px-2 py-1 rounded">${(torrent.Category || '').split(' ')[1] || 'N/A'}</span>
             <div class="flex items-center space-x-2">
                 <span>Size: ${torrent.Size || '-'}</span>
                 <span class="text-green-400">Seeds: ${torrent.Seeders || '-'}</span>
@@ -215,7 +211,7 @@
         </div>
     </div>
 </div>
-					`;
+                    `;
 				}
 				resultsDiv.innerHTML += torrentCard;
 			});
@@ -226,44 +222,46 @@
 			paginationContainer.innerHTML = '';
 
 			if (totalPages > 1) {
-				// Previous button
 				const prevButton = document.createElement('button');
-				prevButton.innerHTML = '&#8592;'; // Left arrow
+				prevButton.innerHTML = '&#8592;';
 				prevButton.className = `px-3 py-1 rounded-md ${currentPage === 1
 					? 'bg-gray-700 text-gray-500 cursor-not-allowed'
 					: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
 				prevButton.disabled = currentPage === 1;
 				prevButton.addEventListener('click', () => {
 					if (currentPage > 1) {
-						searchTorrents(currentPage - 1);
+						currentPage--;
+						document.getElementById('page').value = currentPage;
+						searchTorrents(currentPage);
 					}
 				});
 				paginationContainer.appendChild(prevButton);
 
-				// Page number indicator
 				const pageIndicator = document.createElement('span');
 				pageIndicator.className = 'px-3 py-1 bg-gray-700 text-white rounded-md text-sm';
 				pageIndicator.textContent = `${currentPage} / ${totalPages}`;
 				paginationContainer.appendChild(pageIndicator);
 
-				// Next button
 				const nextButton = document.createElement('button');
-				nextButton.innerHTML = '&#8594;'; // Right arrow
+				nextButton.innerHTML = '&#8594;';
 				nextButton.className = `px-3 py-1 rounded-md ${currentPage === totalPages
 					? 'bg-gray-700 text-gray-500 cursor-not-allowed'
 					: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
 				nextButton.disabled = currentPage === totalPages;
 				nextButton.addEventListener('click', () => {
 					if (currentPage < totalPages) {
-						searchTorrents(currentPage + 1);
+						currentPage++;
+						document.getElementById('page').value = currentPage;
+						searchTorrents(currentPage);
 					}
 				});
 				paginationContainer.appendChild(nextButton);
 			}
 		}
 
-		// Initial search on page load
-		searchTorrents();
+		document.addEventListener('DOMContentLoaded', () => {
+			searchTorrents();
+		});
 	</script>
 </body>
 
