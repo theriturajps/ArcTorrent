@@ -1,41 +1,41 @@
 const axios = require('axios');
 
-async function torrentScraper(query = '', page = '1') {
-	const url = `https://1337xx.to/search/${query}/${page}/`;
-
+async function scrapeTorrents(query, page = 1) {
 	try {
-		const response = await axios.get(url);
-		const html = response.data;
+		// Fetch search results page
+		const searchUrl = `https://1337xx.to/search/${query}/${page}/`;
+		const searchResponse = await axios.get(searchUrl);
 
-		// Regex to extract torrent detail links
-		const linkMatches = html.matchAll(/href="(\/torrent\/[^"]+)"/g);
-		const detailLinks = [...linkMatches].map(match => `https://1337xx.to${match[1]}`);
+		// Extract torrent detail page links using regex
+		const torrentLinks = searchResponse.data.match(/\/torrent\/[^"]+/g)
+			.map(link => `https://1337xx.to${link}`);
 
-		const torrents = await Promise.all(detailLinks.map(async (link) => {
+		// Scrape details for each torrent
+		const torrents = await Promise.all(torrentLinks.map(async (url) => {
 			try {
-				const detailResponse = await axios.get(link);
-				const detailHtml = detailResponse.data;
+				const response = await axios.get(url);
+				const html = response.data;
 
 				return {
-					Name: detailHtml.match(/<h1 class="box-info-heading">(.*?)<\/h1>/)?.[1] || '',
-					Magnet: detailHtml.match(/href="(magnet:[^"]+)"/)?.[1] || '',
-					Poster: detailHtml.match(/src="(https?:\/\/[^"]+\.(?:jpg|png|jpeg))"/)?.[1] || '',
-					Category: detailHtml.match(/Category:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
-					Type: detailHtml.match(/Type:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
-					Size: detailHtml.match(/Size:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
-					Seeders: detailHtml.match(/Seeders:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
-					Leechers: detailHtml.match(/Leechers:<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '',
-					Url: link
+					name: html.match(/<h1>(.*?)<\/h1>/)?.[1] || 'Unknown',
+					magnet: html.match(/href="(magnet:[^"]+)"/)?.[1] || '',
+					size: html.match(/Size.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || 'N/A',
+					seeders: html.match(/Seeders.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '0',
+					leechers: html.match(/Leechers.*?<\/strong>\s*(.*?)\s*<\/li>/)?.[1] || '0',
+					url: url
 				};
-			} catch {
+			} catch (error) {
+				console.error(`Error scraping ${url}:`, error.message);
 				return null;
 			}
 		}));
 
+		// Filter out any failed scrapes
 		return torrents.filter(torrent => torrent !== null);
-	} catch {
+	} catch (error) {
+		console.error('Search error:', error.message);
 		return [];
 	}
 }
 
-module.exports = torrentScraper;
+module.exports = scrapeTorrents;
