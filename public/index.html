@@ -22,11 +22,41 @@
         #resultScrollSection {
             flex-grow: 1;
             overflow-y: auto;
+            scroll-behavior: smooth;
         }
-				.search-container {
+        .search-container {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
+        }
+        /* Custom scrollbar styles for desktop */
+        @media (min-width: 1024px) {
+            #resultScrollSection::-webkit-scrollbar {
+                width: 12px;
+            }
+            #resultScrollSection::-webkit-scrollbar-track {
+                background: #2d3748;
+            }
+            #resultScrollSection::-webkit-scrollbar-thumb {
+                background-color: #4a5568;
+                border-radius: 6px;
+                border: 3px solid #2d3748;
+            }
+            #resultScrollSection::-webkit-scrollbar-thumb:hover {
+                background-color: #718096;
+            }
+        }
+        /* Ensure footer is always visible and fixed */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+        }
+        /* Adjust main content to account for fixed footer */
+        main {
+            padding-bottom: 40px; /* Adjust this value based on your footer height */
         }
     </style>
 </head>
@@ -62,7 +92,7 @@
 		</div>
 	</main>
 
-	<footer class="bg-gray-800 py-2 rounded-md text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent</footer>
+	<footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent</footer>
 
 	<div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
 		<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
@@ -228,4 +258,3 @@
 </body>
 
 </html>
-
