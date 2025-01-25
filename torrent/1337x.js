@@ -2,7 +2,6 @@ const axios = require('axios');
 
 async function torrentScraper(query = '', page = '1') {
 	const url = `https://1337xx.to/search/${query}/${page}/`;
-	const allTorrents = [];
 
 	try {
 		const response = await axios.get(url);
@@ -12,7 +11,9 @@ async function torrentScraper(query = '', page = '1') {
 		const linkMatches = html.matchAll(/href="(\/torrent\/[^"]+)"/g);
 		const detailLinks = [...linkMatches].map(match => `https://1337xx.to${match[1]}`);
 
-		await Promise.all(detailLinks.map(async (link) => {
+		const torrents = [];
+
+		for (const link of detailLinks) {
 			try {
 				const detailResponse = await axios.get(link);
 				const detailHtml = detailResponse.data;
@@ -29,13 +30,13 @@ async function torrentScraper(query = '', page = '1') {
 					Url: link
 				};
 
-				allTorrents.push(data);
+				torrents.push(data);
 			} catch {
-				return null;
+				continue;
 			}
-		}));
+		}
 
-		return allTorrents;
+		return torrents;
 	} catch {
 		return [];
 	}
