@@ -7,27 +7,50 @@
 	<title>ArcTorrent</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
         body {
+            overflow: hidden;
+        }
+        .app-container {
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
         }
+        header {
+            flex-shrink: 0;
+        }
         main {
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
             overflow: hidden;
-        }
-        #resultScrollSection {
-            flex-grow: 1;
-            overflow-y: auto;
-            scroll-behavior: smooth;
+            padding-bottom: 50px; /* Space for footer */
         }
         .search-container {
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
+            flex-shrink: 0;
+        }
+        #resultScrollSection {
+            flex-grow: 1;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 0 10px;
+        }
+        footer {
+            flex-shrink: 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
         }
         /* Custom scrollbar styles for desktop */
         @media (min-width: 1024px) {
@@ -46,53 +69,43 @@
                 background-color: #718096;
             }
         }
-        /* Ensure footer is always visible and fixed */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-        }
-        /* Adjust main content to account for fixed footer */
-        main {
-            padding-bottom: 40px; /* Adjust this value based on your footer height */
-        }
     </style>
 </head>
 
 <body class="bg-gray-900 text-white">
-	<header class="bg-gray-800 shadow-md py-2">
-		<div class="container mx-auto px-2 flex items-center justify-between">
-			<h1 class="text-lg font-bold text-blue-400 flex items-center">
-				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
-				<a href="/">ArcTorrent</a>
-			</h1>
-		</div>
-	</header>
-
-	<main class="container mx-auto px-2 py-3 flex-grow flex flex-col">
-		<div class="search-container space-y-2">
-			<div class="flex space-x-2">
-				<input type="text" id="query" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500" placeholder="Search torrents">
-				<select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
-					<option value="1337x">1337x</option>
-					<option value="nyaasi">Nyaasi</option>
-					<option value="tgx">Torrent Galaxy</option>
-					<option value="yts">YTS</option>
-				</select>
+	<div class="app-container">
+		<header class="bg-gray-800 shadow-md py-2">
+			<div class="container mx-auto px-2 flex items-center justify-between">
+				<h1 class="text-lg font-bold text-blue-400 flex items-center">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
+					<a href="/">ArcTorrent</a>
+				</h1>
 			</div>
-			<div class="flex space-x-2">
-				<input type="number" id="page" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white" placeholder="Page" min="1" value="1">
-				<button onclick="searchTorrents()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
-			</div>
-		</div>
-		<div id="resultScrollSection" class="mt-3 mb-8 flex-grow overflow-y-auto">
-			<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
-		</div>
-	</main>
+		</header>
 
-	<footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent</footer>
+		<main class="container mx-auto px-2 py-3 flex-grow flex flex-col">
+			<div class="search-container space-y-2">
+				<div class="flex space-x-2">
+					<input type="text" id="query" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500" placeholder="Search torrents">
+					<select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
+						<option value="1337x">1337x</option>
+						<option value="nyaasi">Nyaasi</option>
+						<option value="tgx">Torrent Galaxy</option>
+						<option value="yts">YTS</option>
+					</select>
+				</div>
+				<div class="flex space-x-2">
+					<input type="number" id="page" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white" placeholder="Page" min="1" value="1">
+					<button onclick="searchTorrents()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
+				</div>
+			</div>
+			<div id="resultScrollSection" class="mt-3 mb-2 flex-grow overflow-y-auto">
+				<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
+			</div>
+		</main>
+
+		<footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent</footer>
+	</div>
 
 	<div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
 		<div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
