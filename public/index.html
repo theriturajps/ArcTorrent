@@ -44,6 +44,16 @@
             margin: 0 auto;
             flex-shrink: 0;
         }
+				.scroll-progress {
+						position: fixed;
+						bottom: 40px;
+						left: 0;
+						height: 3px;
+						background-color: #3B82F6;
+						width: 0;
+						z-index: 60;
+						transition: width 0.3s ease;
+				}
         #resultScrollSection {
             flex-grow: 1;
             overflow-y: auto;
@@ -95,6 +105,7 @@
         </main>
 
         <footer class="bg-gray-800 rounded-md py-2 text-center text-xs mr-2 ml-2 mb-1 text-gray-400">© 2024 ArcTorrent</footer>
+				<div class="scroll-progress" id="scrollProgress"></div>
     </div>
 
     <div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
@@ -246,9 +257,17 @@
 		}
 
 		// Initial search on page load
-		document.addEventListener('DOMContentLoaded', () => {
-			searchTorrents();
+	document.addEventListener('DOMContentLoaded', () => {
+		const resultScrollSection = document.getElementById('resultScrollSection');
+		const scrollProgress = document.getElementById('scrollProgress');
+
+		resultScrollSection.addEventListener('scroll', () => {
+			const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
+			const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
+
+			scrollProgress.style.width = `${scrollPercentage}%`;
 		});
+	});
 
 		// Add event listener for 'Enter' key press
 		document.getElementById('query').addEventListener('keypress', function (event) {
