@@ -80,18 +80,20 @@
 
 			try {
 				const response = await fetch(apiUrl);
-				torrents = await response.json();
+				const data = await response.json();
 
-				if (!torrents || torrents.length === 0) {
-					resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
+				if (data.error) {
+					resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">${data.error}</div>`;
 					return;
 				}
 
-				currentPage = page;
-				totalPages = Math.ceil(torrents.length / 10);
+				torrents = data.results;
+				currentPage = data.page;
+				totalPages = data.totalPages;
+
 				renderResults(website);
 				renderPagination();
-			} catch {
+			} catch (error) {
 				resultsDiv.innerHTML = '<div class="text-center col-span-full text-red-500">Failed to load results</div>';
 			} finally {
 				spinnerContainer.style.display = 'none';
@@ -223,9 +225,7 @@
 				prevButton.disabled = currentPage === 1;
 				prevButton.addEventListener('click', () => {
 					if (currentPage > 1) {
-						currentPage--;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
+						searchTorrents(currentPage - 1);
 					}
 				});
 				paginationContainer.appendChild(prevButton);
@@ -245,9 +245,7 @@
 				nextButton.disabled = currentPage === totalPages;
 				nextButton.addEventListener('click', () => {
 					if (currentPage < totalPages) {
-						currentPage++;
-						renderResults(document.getElementById('website').value);
-						renderPagination();
+						searchTorrents(currentPage + 1);
 					}
 				});
 				paginationContainer.appendChild(nextButton);

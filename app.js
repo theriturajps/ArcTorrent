@@ -12,115 +12,71 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/:website/:query/:page?', (req, res, next) => {
+const RESULTS_PER_PAGE = 10;
+
+app.use('/api/:website/:query/:page?', async (req, res) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	let website = (req.params.website).toLowerCase();
-	let query = req.params.query;
-	let page = req.params.page;
 
-	if (website === '1337x') {
-		if (page > 50) {
-			return res.json({
-				error: 'Please enter page value less than 51 to get the result :)'
-			})
-		} else {
-			torrent1337x(query, page)
-				.then((data) => {
-					if (data === null) {
-						return res.json({
-							error: 'Website is blocked change IP'
-						})
+	const website = (req.params.website).toLowerCase();
+	const query = req.params.query;
+	let page = parseInt(req.params.page) || 1;
 
-					} else if (data.length === 0) {
-						return res.json({
-							error: 'No search result available for query (' + query + ')'
-						})
-					} else {
-						return res.send(data);
-					}
+	// Validate page number
+	if (page < 1) page = 1;
 
-				})
-		}
-	}
-
-	if (website === 'yts') {
-		torrentYts(query, page)
-			.then((data) => {
-				if (data === null) {
-					return res.json({
-						error: 'Website is blocked change IP'
-					})
-
-				} else if (data.length === 0) {
-					return res.json({
-						error: 'No search result available for query (' + query + ')'
-					})
-				} else {
-					return res.send(data);
+	try {
+		let results;
+		switch (website) {
+			case '1337x':
+				if (page > 50) {
+					return res.json({ error: 'Page value must be less than 51' });
 				}
-
-			})
-	}
-
-	if (website === 'nyaasi') {
-		if (page > 14) {
-			return res.json({
-				error: '14 is the last page'
-			})
-		} else {
-			torrentNyaaSI(query, page)
-				.then((data) => {
-					if (data === null) {
-						return res.json({
-							error: 'Website is blocked change IP'
-						})
-
-					} else if (data.length === 0) {
-						return res.json({
-							error: 'No search result available for query (' + query + ')'
-						})
-					} else {
-						return res.send(data);
-					}
-
-				})
-		}
-	}
-
-	if (website === 'tgx') {
-		torrentGalaxy(query, page)
-			.then((data) => {
-				if (data === null) {
-					return res.json({
-						error: 'Website is blocked change IP'
-					})
-
-				} else if (data.length === 0) {
-					return res.json({
-						error: 'No search result available for query (' + query + ')'
-					})
-				} else {
-					return res.send(data);
+				results = await torrent1337x(query, page);
+				break;
+			case 'yts':
+				results = await torrentYts(query, page);
+				break;
+			case 'nyaasi':
+				if (page > 14) {
+					return res.json({ error: '14 is the last page' });
 				}
+				results = await torrentNyaaSI(query, page);
+				break;
+			case 'tgx':
+				results = await torrentGalaxy(query, page);
+				break;
+			case 'all':
+				results = await torrentCombo(query, page);
+				break;
+			default:
+				return res.json({ error: 'Invalid website name' });
+		}
 
-			})
-	}
+		// Validate and handle results
+		if (results === null) {
+			return res.json({ error: 'Website is blocked or unavailable' });
+		}
 
-	if (website === "all") {
-		torrentCombo(query, page).then((data) => {
-			if (data !== null && data.length > 0) {
-				return res.send(data);
-			} else {
-				return res.json({
-					error: 'No search result available for query (' + query + ')'
-				});
-			}
-		})
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi' && website !== 'tgx') {
-		return res.json({
-			error: 'please enter valid website name (1337x, yts, nyaasi, tgx and all)'
-		})
+		if (results.length === 0) {
+			return res.json({ error: `No results for query: ${query}` });
+		}
+
+		// Return paginated results
+		const startIndex = (page - 1) * RESULTS_PER_PAGE;
+		const endIndex = startIndex + RESULTS_PER_PAGE;
+		const paginatedResults = results.slice(startIndex, endIndex);
+
+		res.json({
+			total: results.length,
+			page: page,
+			totalPages: Math.ceil(results.length / RESULTS_PER_PAGE),
+			results: paginatedResults
+		});
+
+	} catch (error) {
+		console.error('API Error:', error);
+		res.status(500).json({ error: 'Internal server error' });
 	}
 });
 
