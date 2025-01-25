@@ -6,9 +6,32 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ArcTorrent</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        #resultScrollSection {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+				.search-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+<body class="bg-gray-900 text-white">
 	<header class="bg-gray-800 shadow-md py-2">
 		<div class="container mx-auto px-2 flex items-center justify-between">
 			<h1 class="text-lg font-bold text-blue-400 flex items-center">
@@ -18,8 +41,8 @@
 		</div>
 	</header>
 
-	<main class="flex-grow container mx-auto px-2 py-3">
-		<div class="max-w-xl mx-auto space-y-2">
+	<main class="container mx-auto px-2 py-3 flex-grow flex flex-col">
+		<div class="search-container space-y-2">
 			<div class="flex space-x-2">
 				<input type="text" id="query" class="flex-grow px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white focus:ring-1 focus:ring-blue-500" placeholder="Search torrents">
 				<select id="website" class="px-2 py-1.5 text-sm rounded-md bg-gray-800 border border-gray-700 text-white">
@@ -34,9 +57,8 @@
 				<button onclick="searchTorrents()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">Search</button>
 			</div>
 		</div>
-		<div id="resultScrollSection">
-			<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3"></div>
-		</div>
+		<div id="resultScrollSection" class="mt-3 flex-grow overflow-y-auto">
+			<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"></div>
 		</div>
 	</main>
 
@@ -206,3 +228,4 @@
 </body>
 
 </html>
+
