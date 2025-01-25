@@ -1,49 +1,61 @@
-const axios = require('axios');
 const cheerio = require('cheerio');
+const axios = require('axios');
 
-async function scrapeTorrents(query, page = 1) {
-	// Construct the search URL
-	const searchUrl = `https://1337xx.to/search/${query}/${page}/`;
+async function torrent1337x(query = '', page = '1') {
 
+	const allTorrent = [];
+	let html;
+	const url = 'https://1337xx.to/search/' + query + '/' + page + '/';
 	try {
-		// Fetch the search results page
-		const searchResponse = await axios.get(searchUrl);
-		const $ = cheerio.load(searchResponse.data);
-
-		// Extract torrent detail page links
-		const torrentLinks = $('td.name a').map((_, el) =>
-			'https://1337xx.to' + $(el).next().attr('href')
-		).get();
-
-		// Scrape details for each torrent
-		const torrents = await Promise.all(torrentLinks.map(async (link) => {
-			const torrentPage = await axios.get(link);
-			const $torrent = cheerio.load(torrentPage.data);
-
-			return {
-				name: $torrent('.box-info-heading h1').text().trim(),
-				magnet: $torrent('.clearfix ul li a').first().attr('href') || '',
-				poster: getPosterUrl($torrent),
-				category: $torrent('div .clearfix ul li span').first().text(),
-				size: $torrent('div .clearfix ul li span').eq(3).text(),
-				seeders: $torrent('div .clearfix ul li span').eq(8).text(),
-				leechers: $torrent('div .clearfix ul li span').eq(9).text(),
-				url: link
-			};
-		}));
-
-		return torrents;
-	} catch (error) {
-		console.error('Error scraping torrents:', error);
+		html = await axios.get(url);
+	} catch {
 		return null;
 	}
-}
 
-// Helper function to get poster URL
-function getPosterUrl($) {
-	const poster = $('div.torrent-image img').attr('src');
-	if (!poster) return '';
-	return poster.startsWith('http') ? poster : 'https:' + poster;
-}
+	const $ = cheerio.load(html.data)
 
-module.exports = scrapeTorrents;
+	const links = $('td.name').map((_, element) => {
+		var link = 'https://1337xx.to' + $(element).find('a').next().attr('href');
+		return link;
+
+	}).get();
+
+
+	await Promise.all(links.map(async (element) => {
+
+		const data = {};
+		const labels = ['Category', 'Type', 'Language', 'Size', 'UploadedBy', 'Downloads', 'LastChecked', 'DateUploaded', 'Seeders', 'Leechers'];
+		let html;
+		try {
+			html = await axios.get(element);
+		} catch {
+			return null;
+		}
+		const $ = cheerio.load(html.data);
+		data.Name = $('.box-info-heading h1').text().trim();
+		data.Magnet = $('.clearfix ul li a').attr('href') || "";
+		const poster = $('div.torrent-image img').attr('src');
+
+		if (typeof poster !== 'undefined') {
+			if (poster.startsWith('http')) {
+				data.Poster = poster;
+			}
+			else {
+				data.Poster = 'https:' + poster;
+			}
+		} else {
+			data.Poster = ''
+		}
+
+		$('div .clearfix ul li > span').each((i, element) => {
+			$list = $(element);
+			data[labels[i]] = $list.text();
+		})
+		data.Url = element
+
+		allTorrent.push(data)
+	}))
+
+	return allTorrent
+}
+module.exports = torrent1337x
