@@ -69,6 +69,52 @@
             right: 0;
             z-index: 50;
         }
+				.spinner-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+        }
+        .spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .spinner-loader {
+            border-top: 4px solid #3B82F6;
+            border-right: 4px solid #3B82F6;
+            border-bottom: 4px solid #3B82F6;
+            border-left: 4px solid transparent;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        .spinner-website {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        .spinner-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            color: #3B82F6;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -108,46 +154,67 @@
 				<div class="scroll-progress" id="scrollProgress"></div>
     </div>
 
-    <div id="spinner-container" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-75 flex justify-center items-center z-50" style="display: none;">
-        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
+		<div id="spinner-container" class="spinner-container" style="display: none;">
+			<div class="spinner">
+				<div class="spinner-loader"></div>
+				<div class="spinner-website">
+					<svg id="website-logo" class="spinner-logo" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
+					<span id="website-name">Loading...</span>
+				</div>
+			</div>
+		</div>
 
 	<script>
-		async function searchTorrents() {
-			const query = document.getElementById('query').value;
-			const website = document.getElementById('website').value;
-			const page = parseInt(document.getElementById('page').value);
-			const resultsDiv = document.getElementById('results');
-			const spinnerContainer = document.getElementById('spinner-container');
+	async function searchTorrents() {
+		const query = document.getElementById('query').value;
+		const website = document.getElementById('website').value;
+		const page = parseInt(document.getElementById('page').value);
+		const resultsDiv = document.getElementById('results');
+		const spinnerContainer = document.getElementById('spinner-container');
+		const websiteName = document.getElementById('website-name');
+		const websiteLogo = document.getElementById('website-logo');
 
-			if (!query) {
-				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
+		if (!query) {
+			resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">Please enter a search query</div>';
+			return;
+		}
+
+		// Update spinner with website-specific details
+		websiteName.textContent = website.charAt(0).toUpperCase() + website.slice(1);
+
+		// Custom logos for each website
+		const websiteLogos = {
+			'1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+			'nyaasi': '<path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2zm0 2.311L5 7.5v9l7 3.5 7-3.5v-9l-7-3.189z"/>',
+			'yts': '<path d="M21 3H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 9V7c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1zm-2 6H3v-2h7v2zm0-4H3V9h7v5zm9 4h-7v-2h7v2zm0-4h-7V9h7v5z"/>',
+			'tgx': '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v14h-2V5zm-5 0h2v14H7V5zm10 0h2v14h-2V5z"/>'
+		};
+
+		websiteLogo.innerHTML = websiteLogos[website] || '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>';
+
+		spinnerContainer.style.display = 'flex';
+
+		let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
+
+		try {
+			const response = await fetch(apiUrl);
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+
+			if (!data || data.length === 0) {
+				resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
 				return;
 			}
 
-			spinnerContainer.style.display = 'flex';
-
-			let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
-
-			try {
-				const response = await fetch(apiUrl);
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-				const data = await response.json();
-
-				if (!data || data.length === 0) {
-					resultsDiv.innerHTML = '<div class="text-center col-span-full text-gray-500">No results found</div>';
-					return;
-				}
-
-				renderResults(website, data);
-			} catch (error) {
-				resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results</div>`;
-			} finally {
-				spinnerContainer.style.display = 'none';
-			}
+			renderResults(website, data);
+		} catch (error) {
+			resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results</div>`;
+		} finally {
+			spinnerContainer.style.display = 'none';
 		}
+	}
 
 		function renderResults(website, torrents) {
 			const resultsDiv = document.getElementById('results');
