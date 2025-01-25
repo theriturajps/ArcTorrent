@@ -45,9 +45,8 @@
 			</div>
 		</div>
 
-		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3"></div>
-
-		<div id="paginationContainer" class="flex justify-center items-center space-x-1 mt-3"></div>
+		<div id="results" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mt-3">
+		</div>
 	</main>
 
 	<footer class="bg-gray-800 py-2 text-center text-xs text-gray-400">© 2024 ArcTorrent</footer>
@@ -59,10 +58,6 @@
 	</div>
 
 	<script>
-		let currentPage = 1;
-		let totalResults = 0;
-		let resultsPerPage = 20; // Adjust this based on the API's actual results per page
-
 		async function searchTorrents() {
 			const query = document.getElementById('query').value;
 			const website = document.getElementById('website').value;
@@ -91,10 +86,7 @@
 					return;
 				}
 
-				currentPage = page;
-				totalResults = data.length; // This might need adjustment based on the API response structure
 				renderResults(website, data);
-				renderPagination();
 			} catch (error) {
 				resultsDiv.innerHTML = `<div class="text-center col-span-full text-red-500">Failed to load results: ${error.message}</div>`;
 				console.error('Error fetching data:', error);
@@ -208,51 +200,6 @@
 				}
 				resultsDiv.innerHTML += torrentCard;
 			});
-		}
-
-		function renderPagination() {
-			const paginationContainer = document.getElementById('paginationContainer');
-			paginationContainer.innerHTML = '';
-
-			const totalPages = Math.ceil(totalResults / resultsPerPage);
-
-			if (totalPages > 1) {
-				// Previous button
-				const prevButton = document.createElement('button');
-				prevButton.innerHTML = '&#8592;'; // Left arrow
-				prevButton.className = `px-3 py-1 rounded-md ${currentPage === 1
-					? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-					: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
-				prevButton.disabled = currentPage === 1;
-				prevButton.addEventListener('click', () => {
-					if (currentPage > 1) {
-						document.getElementById('page').value = currentPage - 1;
-						searchTorrents();
-					}
-				});
-				paginationContainer.appendChild(prevButton);
-
-				// Page number indicator
-				const pageIndicator = document.createElement('span');
-				pageIndicator.className = 'px-3 py-1 bg-gray-700 text-white rounded-md text-sm';
-				pageIndicator.textContent = `${currentPage} / ${totalPages}`;
-				paginationContainer.appendChild(pageIndicator);
-
-				// Next button
-				const nextButton = document.createElement('button');
-				nextButton.innerHTML = '&#8594;'; // Right arrow
-				nextButton.className = `px-3 py-1 rounded-md ${currentPage === totalPages
-					? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-					: 'bg-blue-700 text-white hover:bg-blue-600 transition'}`;
-				nextButton.disabled = currentPage === totalPages;
-				nextButton.addEventListener('click', () => {
-					if (currentPage < totalPages) {
-						document.getElementById('page').value = currentPage + 1;
-						searchTorrents();
-					}
-				});
-				paginationContainer.appendChild(nextButton);
-			}
 		}
 
 		// Initial search on page load
