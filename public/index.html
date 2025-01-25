@@ -321,6 +321,20 @@
             searchTorrents();
         }
     });
+
+    document.addEventListener('contextmenu', (e) => e.preventDefault()); // Disable right-click
+    document.addEventListener('keydown', (e) => {
+        
+        // Disable specific key combinations like Ctrl+U, Ctrl+Shift+I, etc.
+        if (
+            (e.ctrlKey && e.key === 'u') || // View Source
+            (e.ctrlKey && e.shiftKey && e.key === 'i') || // DevTools
+            (e.ctrlKey && e.key === 's') || // Save Page
+            (e.ctrlKey && e.key === 'p')    // Print
+        ) {
+            e.preventDefault();
+        }
+    });
 </script>
 </body>
 

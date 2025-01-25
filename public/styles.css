@@ -11,6 +11,9 @@ body {
 	margin: 0;
 	display: flex;
 	flex-direction: column;
+	user-select: none; /* Prevent text selection */
+	-webkit-user-select: none; /* For Safari */
+	-ms-user-select: none; /* For IE/Edge */
 }
 body {
 	overflow: hidden;
