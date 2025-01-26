@@ -98,7 +98,7 @@
 
         async function searchTorrents() { // Search torrents function to fetch torrents from selected website based on search query and page number
             const query = document.getElementById('query').value;
-            const selectedWebsiteItem = document.querySelector('#dropdownList .dropdown-item[data-value="' + selectedText.textContent.toLowerCase() + '"]'); // Get selected website item from dropdown list based on selected text content (1337x, YTS, etc.)
+            const selectedWebsite = document.getElementById('selectedText').getAttribute('data-value') || document.getElementById('selectedText').textContent.toLowerCase();
             const page = parseInt(document.getElementById('page').value);
             const resultsDiv = document.getElementById('results');
             const spinnerContainer = document.getElementById('spinner-container');
@@ -106,7 +106,7 @@
             const currentWebsite = document.getElementById('current-website');
 
             // Validate input
-            if (!query.trim()) { // Check if search query is empty or whitespace only (trim whitespace) and display error message if empty query is detected (1337x, YTS, etc.)
+            if (!query.trim()) {
                 resultsDiv.innerHTML = `
                     <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="min-width: 500px; margin: 0 auto;">
                         <div class="flex justify-center mb-4">
@@ -116,13 +116,12 @@
                         <p class="text-sm">Please enter a search query to see results.</p>
                     </div>
                 `;
-
-                return; // Exit function
+                return;
             }
 
             // Validate website selection
-            if (!selectedWebsiteItem) { // Check if website is not selected from the dropdown list and display error message if no website is selected (1337x, YTS, etc.)
-                const resultsDiv = document.getElementById('results');
+            const selectedWebsiteItem = document.querySelector('#dropdownList .dropdown-item[data-value="' + selectedWebsite + '"]');
+            if (!selectedWebsiteItem) {
                 resultsDiv.innerHTML = `
                     <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="min-width: 500px; margin: 0 auto;">
                         <div class="flex justify-center mb-4">
@@ -132,8 +131,7 @@
                         <p class="text-sm">Please select a website from the dropdown to proceed.</p>
                     </div>
                 `;
-
-                return; // Exit function
+                return;
             }
 
             // Fetch torrents from selected website
@@ -371,8 +369,8 @@
         const dropdown = document.getElementById('website');
         const dropdownButton = document.getElementById('dropdownButton');
         const dropdownList = document.getElementById('dropdownList');
-        const selectedText = document.getElementById('selectedText');
         const dropdownItems = document.querySelectorAll('.dropdown-item');
+        const selectedText = document.getElementById('selectedText');
         const queryInput = document.getElementById('query');
 
         // Dropdown functionality
@@ -385,10 +383,13 @@
             item.addEventListener('click', (e) => {
                 const value = e.target.getAttribute('data-value');
                 selectedText.textContent = e.target.textContent;
-                dropdownList.classList.add('hidden');
+                // Importantly, set the data-value attribute on the selectedText element
+                selectedText.setAttribute('data-value', value);
+                document.getElementById('dropdownList').classList.add('hidden');
             });
         });
 
+        // Close dropdown when clicked outside
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
                 dropdownList.classList.add('hidden');
