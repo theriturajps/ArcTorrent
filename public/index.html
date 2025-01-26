@@ -174,14 +174,12 @@
         }
 
     function renderResults(website, torrents) {
-
-        // Clear previous results
         const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = ''; // Clear previous results
+        resultsDiv.innerHTML = '';
 
         torrents.forEach(torrent => {
-            let torrentCard = ''; // Initialize card
-            if (website === '1337x') { // 1337x
+            let torrentCard = '';
+            if (website === '1337x') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
                 <div class="p-3 space-y-2">
@@ -199,7 +197,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'yts') { // YTS
+            } else if (website === 'yts') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-blue-700 transform transition-all hover:scale-95 hover:border-blue-500">
                 <div class="relative h-48 overflow-hidden">
@@ -222,7 +220,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'nyaasi') { // Nyaa.si
+            } else if (website === 'nyaasi') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-purple-700 transform transition-all hover:scale-95 hover:border-purple-500">
                 <div class="p-3 space-y-2">
@@ -243,7 +241,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'tgx') { // Torrent Galaxy
+            } else if (website === 'tgx') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-green-700 transform transition-all hover:scale-95 hover:border-green-500">
                 <div class="relative h-48 overflow-hidden">
@@ -267,7 +265,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'torlock') { // Torlock
+            } else if (website === 'torlock') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
                 <div class="p-3 space-y-2">
@@ -285,7 +283,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'piratebay') { // PirateBay
+            } else if (website === 'piratebay') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
                 <div class="p-3 space-y-2">
@@ -303,7 +301,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'limetorrent') { // LimeTorrent
+            } else if (website === 'limetorrent') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
                 <div class="p-3 space-y-2">
@@ -321,7 +319,7 @@
                 </div>
             </div>
             `;
-            } else if (website === 'glodls') { // Glodls
+            } else if (website === 'glodls') {
                 torrentCard = `
             <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
                 <div class="p-3 space-y-2">
@@ -340,24 +338,19 @@
             </div>
             `;
             }
-
-            // Append card to results
             resultsDiv.innerHTML += torrentCard;
         });
     }
 
     // Keyboard Shortcuts
     document.addEventListener('DOMContentLoaded', () => {
-
-        // Dropdown functionality
         const dropdown = document.getElementById('website');
         const dropdownButton = document.getElementById('dropdownButton');
         const dropdownList = document.getElementById('dropdownList');
         const selectedText = document.getElementById('selectedText');
         const dropdownItems = document.querySelectorAll('.dropdown-item');
-
-        // Search input and website dropdown
         const queryInput = document.getElementById('query');
+        const websiteSelect = document.getElementById('website');
 
         // Dropdown functionality
         dropdownButton.addEventListener('click', (e) => {
@@ -373,7 +366,6 @@
             });
         });
 
-        // Close dropdown on outside click
         document.addEventListener('click', (e) => {
             if (!dropdown.contains(e.target)) {
                 dropdownList.classList.add('hidden');
