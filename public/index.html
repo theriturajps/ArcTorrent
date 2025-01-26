@@ -111,9 +111,6 @@
             const websiteLogo = document.getElementById('website-logo');
             const currentWebsite = document.getElementById('current-website');
 
-            // Show spinner
-            spinnerContainer.style.display = 'flex'; // Show spinner container when search is in progress (loading spinner) with website logo and loading text
-
             // Validate input
             if (!query.trim()) { // Check if search query is empty or whitespace only (trim whitespace) and display error message if empty query is detected (1337x, YTS, etc.)
                 resultsDiv.innerHTML = `
@@ -144,6 +141,9 @@
             // Update logo and text based on selected website
             websiteLogo.innerHTML = websiteLogos[website]; // Update logo based on selected website
             currentWebsite.textContent = website.toUpperCase(); // Update website name in loading text
+
+            // Show spinner
+            spinnerContainer.style.display = 'flex'; // Show spinner container when search is in progress (loading spinner) with website logo and loading text
 
             let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`; // API URL
 
@@ -178,13 +178,11 @@
                 renderResults(website, data); // Render results on the page based on website and data received from API endpoint (1337x, YTS, etc.)
 
             } catch (error) {
-                console.error('Search error:', error); // Log error to console
                 resultsDiv.innerHTML = `
                 <div class="text-center col-span-full text-red-500 bg-red-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Failed to load results. ${error.name === 'AbortError' ? 'Request timed out' : 'Please check your connection'}
-                </div>
-            `;
+                    Failed to load results. ${error.name === 'AbortError' ? 'Request timed out' : 'No search result available for query because of your network error or requested page is not available on the website. Please try again later. Thank you!'}
+                </div>`;
             } finally {
                 spinnerContainer.style.display = 'none'; // Hide spinner after search results are loaded or error occurs (finally block)
             }
