@@ -114,11 +114,15 @@
             // Validate input
             if (!query.trim()) { // Check if search query is empty or whitespace only (trim whitespace) and display error message if empty query is detected (1337x, YTS, etc.)
                 resultsDiv.innerHTML = `
-                <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                    Please enter a search query
-                </div>
+                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="min-width: 500px; margin: 0 auto;">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        <h2 class="text-lg font-semibold mb-2">No Search Query</h2>
+                        <p class="text-sm">Please enter a search query to see results.</p>
+                    </div>
                 `;
+
                 return; // Exit function
             }
 
@@ -126,11 +130,14 @@
             if (!selectedWebsiteItem) { // Check if website is not selected from the dropdown list and display error message if no website is selected (1337x, YTS, etc.)
                 const resultsDiv = document.getElementById('results');
                 resultsDiv.innerHTML = `
-                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        Please select a website from the dropdown
+                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md" style="min-width: 500px; margin: 0 auto;">
+                        <div class="flex justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        <h2 class="text-lg font-semibold mb-2">Website Not Selected</h2>
+                        <p class="text-sm">Please select a website from the dropdown to proceed.</p>
                     </div>
-                    `;
+                `;
 
                 return; // Exit function
             }
@@ -180,8 +187,13 @@
             } catch (error) {
                 resultsDiv.innerHTML = `
                 <div class="text-center col-span-full text-red-500 bg-red-900 bg-opacity-20 p-4 rounded-md" style="max-width: 500px; margin: 0 auto;">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    Failed to load results. ${error.name === 'AbortError' ? 'Request timed out' : 'No search result available for query because of your network error or requested page is not available on the website. Please try again later. Thank you!'}
+                    <div class="flex justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <h2 class="text-lg font-semibold mb-2">Failed to Load Results</h2>
+                    <p class="text-sm">
+                        ${error.name === 'AbortError' ? 'Request timed out' : 'No search result available for your query due to a network error or the requested page is not available. Please try again later. Thank you!'}
+                    </p>
                 </div>`;
             } finally {
                 spinnerContainer.style.display = 'none'; // Hide spinner after search results are loaded or error occurs (finally block)
