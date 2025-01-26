@@ -64,8 +64,8 @@ main {
 	scroll-behavior: smooth;
 	padding: 0 10px;
 	margin-bottom: 36px; /* Space for footer */
-	height: calc(100vh - 120px); /* Adjusted for better visibility */
-	max-height: calc(100vh - 120px);
+	height: calc(100vh - 50px); /* Adjusted for better visibility */
+	max-height: calc(100vh - 50px);
 }
 
 footer {
