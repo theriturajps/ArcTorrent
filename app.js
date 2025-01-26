@@ -9,6 +9,7 @@ const torrentGalaxy = require('./torrent/torrentGalaxy');
 const torrentTorLock = require('./torrent/torLockFile')
 const torrentPirateBay = require('./torrent/pirateBay');
 const torrentLimeTorrent = require('./torrent/limeTorrent');
+const torrentGlodls = require('./torrent/gloTorrents');
 
 const app = express();
 app.use(cors());
@@ -167,6 +168,24 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			})
 	}
 
+	if (website === 'glodls') {
+		torrentGlodls(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+			})
+	}
+
 	if (website === "all") {
 		torrentCombo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {
@@ -177,9 +196,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				});
 			}
 		})
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi' && website !== 'tgx' && website !== 'torlock' && website !== 'piratebay' && website !== 'limetorrent') {
+	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi' && website !== 'tgx' && website !== 'torlock' && website !== 'piratebay' && website !== 'limetorrent' && website !== 'glodls') {
 		return res.json({
-			error: 'please enter valid website name (1337x, yts, nyaasi, tgx, torlock, piratebay, limetorrent and all)'
+			error: 'please enter valid website name (1337x, yts, nyaasi, tgx, torlock, piratebay, limetorrent, glodls and all)'
 		})
 	}
 });
