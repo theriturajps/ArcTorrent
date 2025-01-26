@@ -106,7 +106,7 @@
 
         async function searchTorrents() {
             const query = document.getElementById('query').value;
-            const website = document.getElementById('website').value;
+            const website = document.querySelector('#dropdownList .dropdown-item[data-value="' + selectedText.textContent.toLowerCase() + '"]').getAttribute('data-value');
             const page = parseInt(document.getElementById('page').value);
             const resultsDiv = document.getElementById('results');
             const spinnerContainer = document.getElementById('spinner-container');
@@ -350,7 +350,6 @@
         const selectedText = document.getElementById('selectedText');
         const dropdownItems = document.querySelectorAll('.dropdown-item');
         const queryInput = document.getElementById('query');
-        const websiteSelect = document.getElementById('website');
 
         // Dropdown functionality
         dropdownButton.addEventListener('click', (e) => {
