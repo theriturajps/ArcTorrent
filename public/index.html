@@ -429,56 +429,54 @@
         const resultsDiv = document.getElementById('results'); // Get results container element by ID from the DOM
 
         resultsDiv.innerHTML = `
-    <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 615px; margin: 0 auto;">
-        <div class="flex justify-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-300" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" />
-            </svg>
-        </div>
-        <h2 class="text-xl font-bold">
-            Welcome to <a href="/" class="text-blue-200 hover:underline">ArcTorrent</a>
-        </h2>
-        <p class="text-sm text-blue-200">
-            Search across multiple torrent websites seamlessly with advanced features and quick access.
-        </p>
-        <div class="grid md:grid-cols-2 gap-4 text-left">
-            <div>
-                <h3 class="font-semibold text-blue-300 mb-2">Available Websites :</h3>
-                <table class="w-full border-collapse text-xs text-gray-300">
-                    <tbody>
-                        <tr class="border-b border-gray-700">
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ 1337x</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ YTS</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ Torrent Galaxy</td>
-                        </tr>
-                        <tr class="border-b border-gray-700">
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ Nyaasi</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ Torlock</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ LimeTorrent</td>
-                        </tr>
-                        <tr>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ Torrent Galaxy</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ PirateBay</td>
-                            <td class="p-1 hover:text-blue-300 transition-colors">➧ Glodls</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p class="text-xs text-red-300 mt-1">➠ More coming soon...</p>
-            </div>
-            <div>
-                <h3 class="font-semibold text-blue-300 mb-2">Keyboard Shortcuts :</h3>
-                <ul class="text-xs text-gray-300 space-y-1">
-                    <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + F</kbd> : Focus search bar</li>
-                    <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + Enter</kbd> : Trigger search</li>
-                    <li>➽ <kbd class="bg-gray-700 px-1 rounded">Enter</kbd> : Instant search results</li>
-                </ul>
-            </div>
-        </div>
-        <div class="text-xs text-gray-400 italic mt-4">
-            <strong>Pro Tip :</strong> Press Enter after typing your search query for instant results
-        </div>
-    </div>
-`;
+                <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 615px; margin: 0 auto;">
+                    <div class="flex justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
+                    </div>
+                    <h2 class="text-xl font-bold">
+                        Welcome to <a href="/" class="text-blue-200 hover:underline">ArcTorrent</a>
+                    </h2>
+                    <p class="text-sm text-blue-200">
+                        Search across multiple torrent websites seamlessly with advanced features and quick access.
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 text-left">
+                        <div>
+                            <h3 class="font-semibold text-blue-300 mb-2">Available Websites :</h3>
+                            <table class="w-full border-collapse text-xs text-gray-300">
+                                <tbody>
+                                    <tr class="border-b border-gray-700">
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ 1337x</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ YTS</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ Torrent Galaxy</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-700">
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ Nyaasi</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ Torlock</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ LimeTorrent</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ Torrent Galaxy</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ PirateBay</td>
+                                        <td class="p-1 hover:text-blue-300 transition-colors">➧ Glodls</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p class="text-xs text-red-300 mt-1">➠ More coming soon...</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-blue-300 mb-2">Keyboard Shortcuts :</h3>
+                            <ul class="text-xs text-gray-300 space-y-1">
+                                <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + F</kbd> : Focus search bar</li>
+                                <li>➽ <kbd class="bg-gray-700 px-1 rounded">Ctrl/Cmd + Enter</kbd> : Trigger search</li>
+                                <li>➽ <kbd class="bg-gray-700 px-1 rounded">Enter</kbd> : Instant search results</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-400 italic mt-4">
+                        <strong>Pro Tip :</strong> Press Enter after typing your search query for instant results
+                    </div>
+                </div>
+            `;
 
     });
 
