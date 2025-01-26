@@ -111,10 +111,6 @@
             const websiteLogo = document.getElementById('website-logo');
             const currentWebsite = document.getElementById('current-website');
 
-            // Update logo and text based on selected website
-            websiteLogo.innerHTML = websiteLogos[website]; // Update logo based on selected website
-            currentWebsite.textContent = website.toUpperCase(); // Update website name in loading text
-
             // Show spinner
             spinnerContainer.style.display = 'flex'; // Show spinner container when search is in progress (loading spinner) with website logo and loading text
 
@@ -144,6 +140,10 @@
 
             // Fetch torrents from selected website
             const website = selectedWebsiteItem.getAttribute('data-value'); // Get selected website value from the dropdown item (1337x, YTS, etc.)
+
+            // Update logo and text based on selected website
+            websiteLogo.innerHTML = websiteLogos[website]; // Update logo based on selected website
+            currentWebsite.textContent = website.toUpperCase(); // Update website name in loading text
 
             let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`; // API URL
 
