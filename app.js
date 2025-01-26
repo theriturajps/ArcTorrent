@@ -6,7 +6,7 @@ const torrentYts = require('./torrent/yts');
 const torrentCombo = require('./torrent/COMBO');
 const torrentNyaaSI = require('./torrent/nyaaSI');
 const torrentGalaxy = require('./torrent/torrentGalaxy');
-const torrentTorLock = require('./torrent/torlock')
+const torrentTorLock = require('./torrent/TorLock.js')
 
 const app = express();
 app.use(cors());
