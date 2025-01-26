@@ -1,12 +1,11 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-async function torrentGlodls(query, page = '0') {
-	var allTorrent = [];
+async function glodls(query, page = '0') {
+	var ALLTORRENT = [];
 	const url = `https://glodls.to/search_results.php?search=${query}&sort=seeders&order=desc&page=${page}`;
 	let html;
 	try {
-
 		html = await axios.get(url, headers = {
 			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36"
 		});
@@ -17,7 +16,9 @@ async function torrentGlodls(query, page = '0') {
 
 	const $ = cheerio.load(html.data);
 
+
 	$('.ttable_headinner tr').each((_, element) => {
+
 
 		let torrent = {
 			'Name': $(element).find('td').eq(1).find('a').text().trim(),
@@ -29,13 +30,10 @@ async function torrentGlodls(query, page = '0') {
 			'Torrent': "https://glodls.to" + $(element).find('td').eq(2).find('a').attr('href'),
 			'Magnet': $(element).find('td').eq(3).find('a').attr('href'),
 		}
-
 		if (torrent.Name !== '') {
-			allTorrent.push(torrent);
+			ALLTORRENT.push(torrent);
 		}
-
 	})
-	return allTorrent;
+	return ALLTORRENT;
 }
-
-module.exports = torrentGlodls
+module.exports = glodls
