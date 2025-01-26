@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-async function glodls(query, page = '0', maxRetries = 3) {
+async function torrentGlodls(query, page = '0', maxRetries = 3) {
 	const url = `https://glodls.to/search_results.php?search=${query}&sort=seeders&order=desc&page=${page}`;
 
 	const userAgents = [
@@ -55,4 +55,4 @@ async function glodls(query, page = '0', maxRetries = 3) {
 	}
 }
 
-module.exports = glodls
+module.exports = torrentGlodls
