@@ -48,6 +48,7 @@
                         <option value="1337x">1337x</option>
                         <option value="nyaasi">Nyaasi</option>
                         <option value="tgx">Torrent Galaxy</option>
+                        <option value="torlock">Torlock</option>
                         <option value="yts">YTS</option>
                     </select>
                 </div>
@@ -82,7 +83,8 @@
             '1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
             'nyaasi': '<path d="M12 2l9 4.5v11L12 22l-9-4.5v-11L12 2zm0 2.311L5 7.5v9l7 3.5 7-3.5v-9l-7-3.189z"/>',
             'yts': '<path d="M21 3H3C1.9 3 1 3.9 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 9V7c0-.6.4-1 1-1h6c.6 0 1 .4 1 1v5c0 .6-.4 1-1 1h-6c-.6 0-1-.4-1-1zm-2 6H3v-2h7v2zm0-4H3V9h7v5zm9 4h-7v-2h7v2zm0-4h-7V9h7v5z"/>',
-            'tgx': '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v14h-2V5zm-5 0h2v14H7V5zm10 0h2v14h-2V5z"/>'
+            'tgx': '<path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 2h2v14h-2V5zm-5 0h2v14H7V5zm10 0h2v14h-2V5z"/>',
+            'torlock': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>'
         };
 
         async function searchTorrents() {
@@ -246,6 +248,24 @@
                 </div>
             </div>
             `;
+            } else if (website === 'torlock') {
+                torrentCard = `
+            <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-md border-2 border-red-700 transform transition-all hover:scale-95 hover:border-red-500">
+                <div class="p-3 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-blue-300 truncate max-w-[70%]">${torrent.Name}</h3>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-gray-400">
+                        <div>Size: <span class="font-medium">${torrent.Size || '-'}</span></div>
+                        <div>Seeds: <span class="text-green-400 font-bold">${torrent.Seeders || '-'}</span></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="${torrent.Magnet}" class="bg-blue-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-blue-700 transition">Magnet</a>
+                        <a href="${torrent.Torrent}" class="bg-green-600 text-white text-xs px-2 py-1 rounded text-center hover:bg-green-700 transition">Torrent</a>
+                    </div>
+                </div>
+            </div>
+            `;
             }
             resultsDiv.innerHTML += torrentCard;
         });
@@ -282,7 +302,10 @@
                     websiteSelect.selectedIndex = 2; // Torrent Galaxy
                     break;
                 case '4':
-                    websiteSelect.selectedIndex = 3; // YTS
+                    websiteSelect.selectedIndex = 3; // Torlock
+                    break;
+                case '5':
+                    websiteSelect.selectedIndex = 4; // yts
                     break;
             }
         });
@@ -314,6 +337,7 @@
                             <li>➽ Nyaasi : Anime and Asian content</li>
                             <li>➽ Torrent Galaxy : Diverse content library</li>
                             <li>➽ YTS : Movies and HD releases</li>
+                            <li>➽ Torlock : Verified torrents</li>
                             <li class="text-xs text-red-300">➠ More coming soon...</li>
                         </ul>
                     </div>
