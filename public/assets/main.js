@@ -419,7 +419,7 @@ function shareWebsite() {
     }
 }
 
-// Refresh page function with sound
+// Refresh page function
 function refreshPage() {
     location.reload();
 }
