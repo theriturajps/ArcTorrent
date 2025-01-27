@@ -8,7 +8,7 @@ const torrentPirateBay = require('../services/pirateBay');
 const torrentLimeTorrent = require('../services/limeTorrent');
 const torrentGlodls = require('../services/gloTorrents');
 
-const searchTorrentsController = async (req, res) => {
+const searchTorrentsController = async (req, res, next) => {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	let website = (req.params.website).toLowerCase();
