@@ -316,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Close dropdown when clicked outside
     document.addEventListener('click', (e) => {
-        playTapSound();
         if (!dropdown.contains(e.target)) {
             dropdownList.classList.add('hidden');
         }
