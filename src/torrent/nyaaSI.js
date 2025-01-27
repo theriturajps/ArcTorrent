@@ -39,8 +39,6 @@ async function torrentNyaaSI(query, page = '1') {
 
 		});
 		torrents.push(data);
-		console.log(data);
-
 	});
 
 	return torrents
