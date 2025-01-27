@@ -9,63 +9,188 @@ const torrentLimeTorrent = require('../services/limeTorrent');
 const torrentGlodls = require('../services/gloTorrents');
 
 const searchTorrentsController = async (req, res) => {
-	const website = req.params.website.toLowerCase();
-	const query = req.params.query;
-	const page = req.params.page;
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	let website = (req.params.website).toLowerCase();
+	let query = req.params.query;
+	let page = req.params.page;
 
-	try {
-		let data;
-		switch (website) {
-			case '1337x':
-				if (page > 50) {
-					return res.json({ error: 'Please enter page value less than 51 to get the result :)' });
-				}
-				data = await torrent1337x(query, page);
-				break;
-			case 'yts':
-				data = await torrentYts(query, page);
-				break;
-			case 'nyaasi':
-				if (page > 14) {
-					return res.json({ error: '14 is the last page' });
-				}
-				data = await torrentNyaaSI(query, page);
-				break;
-			case 'tgx':
-				data = await torrentGalaxy(query, page);
-				break;
-			case 'torlock':
-				data = await torrentTorLock(query, page);
-				break;
-			case 'piratebay':
-				data = await torrentPirateBay(query, page);
-				break;
-			case 'limetorrent':
-				data = await torrentLimeTorrent(query, page);
-				break;
-			case 'glodls':
-				data = await torrentGlodls(query, page);
-				break;
-			case 'all':
-				data = await torrentCombo(query, page);
-				break;
-			default:
-				return res.json({
-					error: 'please enter valid website name (1337x, yts, nyaasi, tgx, torlock, piratebay, limetorrent, glodls and all)'
-				});
+	if (website === '1337x') {
+		if (page > 50) {
+			return res.json({
+				error: 'Please enter page  value less than 51 to get the result :)'
+			})
+		} else {
+			torrent1337x(query, page)
+				.then((data) => {
+					if (data === null) {
+						return res.json({
+							error: 'Website is blocked change IP'
+						})
+
+					} else if (data.length === 0) {
+						return res.json({
+							error: 'No search result available for query (' + query + ')'
+						})
+					} else {
+						return res.send(data);
+					}
+
+				})
 		}
-
-		if (data === null) {
-			return res.json({ error: 'Website is blocked change IP' });
-		} else if (data.length === 0) {
-			return res.json({ error: `No search result available for query (${query})` });
-		}
-
-		return res.json(data);
-	} catch (error) {
-		console.error('Error searching torrents:', error);
-		return res.status(500).json({ error: 'Internal server error' });
 	}
-};
+	if (website === 'yts') {
+		torrentYts(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+
+			})
+	}
+	if (website === 'torlock') {
+		torrentTorLock(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+
+			})
+	}
+	if (website === 'piratebay') {
+		torrentPirateBay(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+
+			})
+	}
+	if (website === 'tgx') {
+		torrentGalaxy(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+
+			})
+	}
+	
+	if (website === 'glodls') {
+		torrentGlodls(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+			})
+	}
+
+	if (website === 'limetorrent') {
+		torrentLimeTorrent(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+			})
+	}
+
+	if (website === 'nyaasi') {
+		if (page > 14) {
+			return res.json({
+				error: '14 is the last page'
+			})
+		} else {
+			torrentNyaaSI(query, page)
+				.then((data) => {
+					if (data === null) {
+						return res.json({
+							error: 'Website is blocked change IP'
+						})
+
+					} else if (data.length === 0) {
+						return res.json({
+							error: 'No search result available for query (' + query + ')'
+						})
+					} else {
+						return res.send(data);
+					}
+
+				})
+		}
+
+	}
+
+	if (website === "all") {
+		torrentCombo(query, page).then((data) => {
+			if (data !== null && data.length > 0) {
+				return res.send(data);
+			} else {
+				return res.json({
+					error: 'No search result available for query (' + query + ')'
+				});
+			}
+		})
+
+	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'eztv' && website !== 'tgx' && website !== 'all' && website !== "rarbg" && website !== 'ettv' && website !== 'zooqle' && website !== 'kickass' && website !== 'bitsearch' && website !== 'glodls' && website !== 'magnetdl' && website !== 'limetorrent' && website !== 'torrentfunk' && website !== 'torrentproject') {
+		return res.json({
+			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | all (to scrap from every site)'
+		})
+	}
+
+}
 
 module.exports = searchTorrentsController

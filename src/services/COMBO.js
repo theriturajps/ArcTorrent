@@ -17,7 +17,6 @@ async function torrentCombo(query, page) {
 		scrapPirateBay(query, page),
 		scrapTorLock(query, page),
 		scrap1337x(query, page),
-		kickAss(query, page),
 		glodls(query, page),
 		limeTorrent(query, page)
 	])
