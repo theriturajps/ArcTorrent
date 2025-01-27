@@ -1,28 +1,51 @@
-const torrentYts = require('./yts');
-const torrent1337x = require('./1337x');
-const torrentNyaaSI = require('./nyaaSI');
+const scrap1337x = require('./1337x');
+const scrapNyaa = require('./nyaaSI');
+const scrapYts = require('./yts');
+const scrapPirateBay = require('./pirateBay');
+const scrapTorLock = require('./torLockFile');
 const torrentGalaxy = require('./torrentGalaxy');
+const glodls = require('./gloTorrents');
+const limeTorrent = require('./limeTorrent');
+
 
 async function torrentCombo(query, page) {
 	let comboTorrent = []
 	await Promise.all([
-		torrentYts(query, page),
-		torrent1337x(query, page),
-		torrentGalaxy(query, page)
+		torrentGalaxy(query, page),
+		scrapNyaa(query, page),
+		scrapYts(query, page),
+		scrapPirateBay(query, page),
+		scrapTorLock(query, page),
+		scrap1337x(query, page),
+		kickAss(query, page),
+		glodls(query, page),
+		limeTorrent(query, page)
 	])
-		.then(([yts, x1337, nyaasi, tgx]) => {
+		.then(([tgx, nyaasi, yts, piratebay, torlock, x1337, glodls, limetorrent]) => {
 
+			if (tgx !== null && tgx.length > 0) {
+				comboTorrent.push(tgx);
+			}
+			if (nyaasi !== null && nyaasi.length > 0) {
+				comboTorrent.push(nyaasi);
+			}
 			if (yts !== null && yts.length > 0) {
 				comboTorrent.push(yts);
+			}
+			if (piratebay !== null && piratebay.length > 0) {
+				comboTorrent.push(piratebay);
+			}
+			if (torlock !== null && torlock.length > 0) {
+				comboTorrent.push(torlock);
 			}
 			if (x1337 !== null && x1337.length > 0) {
 				comboTorrent.push(x1337);
 			}
-			if(nyaasi !== null && nyaasi.length > 0){
-				comboTorrent.push(nyaasi);
+			if (glodls !== null && glodls.length > 0) {
+				comboTorrent.push(glodls);
 			}
-			if(tgx !== null && tgx.length > 0){
-				comboTorrent.push(tgx);
+			if (limetorrent !== null && limetorrent.length > 0) {
+				comboTorrent.push(limetorrent);
 			}
 		})
 	return comboTorrent;
