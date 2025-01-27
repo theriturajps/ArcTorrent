@@ -8,7 +8,7 @@ const torrentPirateBay = require('../services/pirateBay');
 const torrentLimeTorrent = require('../services/limeTorrent');
 const torrentGlodls = require('../services/gloTorrents');
 
-const searchTorrents = async (req, res) => {
+const searchTorrentsController = async (req, res) => {
 	const website = req.params.website.toLowerCase();
 	const query = req.params.query;
 	const page = req.params.page;
@@ -68,4 +68,4 @@ const searchTorrents = async (req, res) => {
 	}
 };
 
-module.exports = searchTorrents
+module.exports = searchTorrentsController

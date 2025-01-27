@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
+const apiIndexRouter = express.Router();
 const torrentRoutes = require('./torrentRoutes');
 
-router.use('/api', torrentRoutes);
+apiIndexRouter.use('/api', torrentRoutes);
 
-module.exports = router;
+module.exports = apiIndexRouter;

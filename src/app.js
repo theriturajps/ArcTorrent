@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
-const routes = require('./routes/index');
+const apiIndexRouter = require('./routes/index');
 
 const app = express();
 
@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.use('/', routes);
+app.use('/', apiIndexRouter);
 
 // Serve index.html for root route
 app.get('/', (req, res) => {
