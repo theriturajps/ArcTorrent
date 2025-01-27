@@ -1,112 +1,111 @@
-const websiteLogos = { // Website logos for spinner container (1337x, YTS, etc.)
-	'1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'nyaasi': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'yts': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'tgx': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'torlock': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'piratebay': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'limetorrent': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
-	'glodls': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>'
+// Play sound effect function
+function playTapSound() {
+    const tapSound = new Audio('./assets/click.mp3');
+    tapSound.volume = 0.3;
+    tapSound.play().catch(err => console.log('Audio play failed:', err));
+}
+
+const websiteLogos = {
+    '1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'nyaasi': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'yts': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'tgx': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'torlock': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'piratebay': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'limetorrent': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
+    'glodls': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>'
 };
 
-async function searchTorrents() { // Search torrents function to fetch torrents from selected website based on search query and page number
-	const query = document.getElementById('query').value;
-	const selectedWebsite = document.getElementById('selectedText').getAttribute('data-value') || document.getElementById('selectedText').textContent.toLowerCase();
-	const page = parseInt(document.getElementById('page').value);
-	const resultsDiv = document.getElementById('results');
-	const spinnerContainer = document.getElementById('spinner-container');
-	const websiteLogo = document.getElementById('website-logo');
-	const currentWebsite = document.getElementById('current-website');
+async function searchTorrents() {
+    playTapSound(); // Play sound when search is triggered
 
-	// Validate input
-	if (!query.trim()) {
-		resultsDiv.innerHTML = `
-                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
-                        <div class="flex justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        </div>
-                        <h2 class="text-lg font-semibold mb-2">No Search Query</h2>
-                        <p class="text-sm">Please enter a search query to see results.</p>
+    const query = document.getElementById('query').value;
+    const selectedWebsite = document.getElementById('selectedText').getAttribute('data-value') || document.getElementById('selectedText').textContent.toLowerCase();
+    const page = parseInt(document.getElementById('page').value);
+    const resultsDiv = document.getElementById('results');
+    const spinnerContainer = document.getElementById('spinner-container');
+    const websiteLogo = document.getElementById('website-logo');
+    const currentWebsite = document.getElementById('current-website');
+
+    if (!query.trim()) {
+        resultsDiv.innerHTML = `
+            <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
+                <div class="flex justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                </div>
+                <h2 class="text-lg font-semibold mb-2">No Search Query</h2>
+                <p class="text-sm">Please enter a search query to see results.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const selectedWebsiteItem = document.querySelector('#dropdownList .dropdown-item[data-value="' + selectedWebsite + '"]');
+    if (!selectedWebsiteItem) {
+        resultsDiv.innerHTML = `
+            <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
+                <div class="flex justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                </div>
+                <h2 class="text-lg font-semibold mb-2">Website Not Selected</h2>
+                <p class="text-sm">Please select a website from the dropdown to proceed.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const website = selectedWebsiteItem.getAttribute('data-value');
+    websiteLogo.innerHTML = websiteLogos[website];
+    currentWebsite.textContent = website.toUpperCase();
+    spinnerContainer.style.display = 'flex';
+
+    let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 10000
+        });
+
+        if (!response.ok) {
+            throw new Error(`Network response error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data || data.length === 0) {
+            resultsDiv.innerHTML = `
+                <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
+                    <div class="flex justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                     </div>
-                `;
-		return;
-	}
+                    <h2 class="text-lg font-semibold mb-2">No Results Found</h2>
+                    <p class="text-sm">No results found for "<span class="font-bold">${query}</span>" on <span class="font-bold">${website.toUpperCase()}</span>. Please try again with a different query.</p>
+                </div>
+            `;
+            return;
+        }
 
-	// Validate website selection
-	const selectedWebsiteItem = document.querySelector('#dropdownList .dropdown-item[data-value="' + selectedWebsite + '"]');
-	if (!selectedWebsiteItem) {
-		resultsDiv.innerHTML = `
-                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
-                        <div class="flex justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        </div>
-                        <h2 class="text-lg font-semibold mb-2">Website Not Selected</h2>
-                        <p class="text-sm">Please select a website from the dropdown to proceed.</p>
-                    </div>
-                `;
-		return;
-	}
+        renderResults(website, data);
 
-	// Fetch torrents from selected website
-	const website = selectedWebsiteItem.getAttribute('data-value'); // Get selected website value from the dropdown item (1337x, YTS, etc.)
-
-	// Update logo and text based on selected website
-	websiteLogo.innerHTML = websiteLogos[website]; // Update logo based on selected website
-	currentWebsite.textContent = website.toUpperCase(); // Update website name in loading text
-
-	// Show spinner
-	spinnerContainer.style.display = 'flex'; // Show spinner container when search is in progress (loading spinner) with website logo and loading text
-
-	let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`; // API URL
-
-	try {
-		const response = await fetch(apiUrl, {
-			method: 'GET', // GET request
-			headers: {
-				'Content-Type': 'application/json' // JSON response
-			},
-			timeout: 10000 // 10 seconds timeout
-		});
-
-		// Network or server errors
-		if (!response.ok) {
-			throw new Error(`Network response error: ${response.status}`); // Throw error
-		}
-
-		const data = await response.json(); // Parse JSON response
-
-		// Check for empty results
-		if (!data || data.length === 0) {
-			resultsDiv.innerHTML = `
-                        <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
-                            <div class="flex justify-center mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                            </div>
-                            <h2 class="text-lg font-semibold mb-2">No Results Found</h2>
-                            <p class="text-sm">No results found for "<span class="font-bold">${query}</span>" on <span class="font-bold">${website.toUpperCase()}</span>. Please try again with a different query.</p>
-                        </div>
-                    `;
-
-			return; // Exit function
-		}
-
-		renderResults(website, data); // Render results on the page based on website and data received from API endpoint (1337x, YTS, etc.)
-
-	} catch (error) {
-		resultsDiv.innerHTML = `
-                    <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
-                        <div class="flex justify-center mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        </div>
-                        <h2 class="text-lg font-semibold mb-2">Failed to Load Results</h2>
-                        <p class="text-sm">
-                            ${error.name === 'AbortError' ? 'Request timed out' : 'No search result available for your query due to a network error or the requested page is not available. Please try again later. Thank you!'}
-                        </p>
-                    </div>
-                `;
-	} finally {
-		spinnerContainer.style.display = 'none'; // Hide spinner after search results are loaded or error occurs (finally block)
-	}
+    } catch (error) {
+        resultsDiv.innerHTML = `
+            <div class="text-center col-span-full text-yellow-500 bg-yellow-900 bg-opacity-20 p-4 rounded-md w-full max-w-md mx-auto">
+                <div class="flex justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h2 class="text-lg font-semibold mb-2">Failed to Load Results</h2>
+                <p class="text-sm">
+                    ${error.name === 'AbortError' ? 'Request timed out' : 'No search result available for your query due to a network error or the requested page is not available. Please try again later. Thank you!'}
+                </p>
+            </div>
+        `;
+    } finally {
+        spinnerContainer.style.display = 'none';
+    }
 }
 
 function renderResults(website, torrents) {
@@ -280,64 +279,77 @@ function renderResults(website, torrents) {
 
 // Keyboard Shortcuts
 document.addEventListener('DOMContentLoaded', () => {
-	const dropdown = document.getElementById('website');
-	const dropdownButton = document.getElementById('dropdownButton');
-	const dropdownList = document.getElementById('dropdownList');
-	const dropdownItems = document.querySelectorAll('.dropdown-item');
-	const selectedText = document.getElementById('selectedText');
-	const queryInput = document.getElementById('query');
+    const dropdown = document.getElementById('website');
+    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownList = document.getElementById('dropdownList');
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
+    const selectedText = document.getElementById('selectedText');
+    const queryInput = document.getElementById('query');
+    const pageInput = document.getElementById('page');
 
-	// Dropdown functionality
-	dropdownButton.addEventListener('click', (e) => {
-		dropdownList.classList.toggle('hidden');
-	});
+    // Add sound to all buttons
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', playTapSound);
+    });
 
-	// Select website from dropdown
-	dropdownItems.forEach(item => {
-		item.addEventListener('click', (e) => {
-			const value = e.target.getAttribute('data-value');
-			selectedText.textContent = e.target.textContent;
-			// Importantly, set the data-value attribute on the selectedText element
-			selectedText.setAttribute('data-value', value);
-			document.getElementById('dropdownList').classList.add('hidden');
-		});
-	});
+    // Add sound to input fields on focus
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('focus', playTapSound);
+    });
 
-	// Close dropdown when clicked outside
-	document.addEventListener('click', (e) => {
-		if (!dropdown.contains(e.target)) {
-			dropdownList.classList.add('hidden');
-		}
-	});
+    // Dropdown functionality with sound
+    dropdownButton.addEventListener('click', (e) => {
+        playTapSound();
+        dropdownList.classList.toggle('hidden');
+    });
 
-	// Add keyboard event listener
-	document.addEventListener('keydown', function (event) { // Listen for keyboard events on the document level for global keyboard shortcuts (Ctrl+F, Ctrl+Enter, etc.)
+    // Select website from dropdown with sound
+    dropdownItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            playTapSound();
+            const value = e.target.getAttribute('data-value');
+            selectedText.textContent = e.target.textContent;
+            selectedText.setAttribute('data-value', value);
+            dropdownList.classList.add('hidden');
+        });
+    });
 
-		if ((event.ctrlKey || event.metaKey) && event.key === 'f') { // Ctrl+F or Cmd+F to focus on search input field (query) for quick search access (keyboard shortcut)
-			event.preventDefault();
-			queryInput.focus();
-		}
+    // Close dropdown when clicked outside
+    document.addEventListener('click', (e) => {
+        playTapSound();
+        if (!dropdown.contains(e.target)) {
+            dropdownList.classList.add('hidden');
+        }
+    });
 
-		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') { // Ctrl+Enter or Cmd+Enter to trigger search (keyboard shortcut)
-			event.preventDefault();
-			searchTorrents();
-		}
-	});
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+            event.preventDefault();
+            playTapSound();
+            queryInput.focus();
+        }
 
-	// Existing initial page load code
-	const resultScrollSection = document.getElementById('resultScrollSection'); // Get the scrollable results section element by ID from the DOM
-	const scrollProgress = document.getElementById('scrollProgress'); // Get the scroll progress bar element by ID from the DOM
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            event.preventDefault();
+            playTapSound();
+            searchTorrents();
+        }
+    });
 
-	resultScrollSection.addEventListener('scroll', () => {
-		const { scrollTop, scrollHeight, clientHeight } = resultScrollSection; // Get scroll position, scroll height, and client height of the results section
-		const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100); // Calculate scroll percentage
+    // Scroll progress functionality
+    const resultScrollSection = document.getElementById('resultScrollSection');
+    const scrollProgress = document.getElementById('scrollProgress');
 
-		scrollProgress.style.width = `${scrollPercentage}%`; // Update scroll progress bar width based on scroll percentage
-	});
+    resultScrollSection.addEventListener('scroll', () => {
+        const { scrollTop, scrollHeight, clientHeight } = resultScrollSection;
+        const scrollPercentage = Math.min((scrollTop / (scrollHeight - clientHeight)) * 100, 100);
+        scrollProgress.style.width = `${scrollPercentage}%`;
+    });
 
-	const resultsDiv = document.getElementById('results'); // Get results container element by ID from the DOM
-
-	resultsDiv.innerHTML = `
+    // Initial welcome message
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = `
                 <div class="text-center col-span-full text-blue-300 bg-blue-900 bg-opacity-20 p-6 rounded-md space-y-4" style="max-width: 615px; margin: 0 auto;">
                     <div class="flex justify-center mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
@@ -389,45 +401,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-document.getElementById('query').addEventListener('keypress', function (event) { // Listen for 'Enter' key press on search input field (query) for instant search results (keyboard shortcut)
-	if (event.key === 'Enter') {
-		event.preventDefault();
-		searchTorrents();
-	}
+// Enter key search trigger with sound
+document.getElementById('query').addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        playTapSound();
+        searchTorrents();
+    }
 });
 
-document.addEventListener('contextmenu', (e) => e.preventDefault()); // Disable right-click
+// Security measures
+document.addEventListener('contextmenu', (e) => e.preventDefault());
 document.addEventListener('keydown', (e) => {
-	if ( // Disable specific key combinations like Ctrl+U, Ctrl+Shift+I (Inspect Element), Ctrl+S (Save Page), Ctrl+P (Print)
-		(e.ctrlKey && e.key === 'u') || // View Source
-		(e.ctrlKey && e.shiftKey && e.key === 'i') || // DevTools
-		(e.ctrlKey && e.key === 's') || // Save Page
-		(e.ctrlKey && e.key === 'p')    // Print
-	) {
-		e.preventDefault(); // Prevent default action for the above key combinations (Ctrl+U, Ctrl+Shift+I, Ctrl+S, Ctrl+P)
-	}
+    if (
+        (e.ctrlKey && e.key === 'u') ||
+        (e.ctrlKey && e.shiftKey && e.key === 'i') ||
+        (e.ctrlKey && e.key === 's') ||
+        (e.ctrlKey && e.key === 'p')
+    ) {
+        e.preventDefault();
+    }
 });
 
-function shareWebsite() { // Share website function
-	const shareMessage = "Check out ArcTorrent - A powerful torrent search aggregator!";
-	const websiteUrl = window.location.href; // Get current website URL for sharing (window.location.href)
+// Share website function with sound
+function shareWebsite() {
+    playTapSound();
+    const shareMessage = "Check out ArcTorrent - A powerful torrent search aggregator!";
+    const websiteUrl = window.location.href;
 
-	if (navigator.share) {
-		navigator.share({
-			title: 'ArcTorrent',
-			text: shareMessage,
-			url: websiteUrl
-		}).catch(console.error);
-	} else {
-		const tempInput = document.createElement('input');
-		tempInput.value = `${shareMessage} ${websiteUrl}`;
-		document.body.appendChild(tempInput);
-		tempInput.select();
-		document.execCommand('copy');
-		document.body.removeChild(tempInput);
-	}
+    if (navigator.share) {
+        navigator.share({
+            title: 'ArcTorrent',
+            text: shareMessage,
+            url: websiteUrl
+        }).catch(console.error);
+    } else {
+        const tempInput = document.createElement('input');
+        tempInput.value = `${shareMessage} ${websiteUrl}`;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+    }
 }
 
+// Refresh page function with sound
 function refreshPage() {
-	location.reload();
+    playTapSound();
+    location.reload();
 }
