@@ -1,12 +1,14 @@
 {
 	"name": "ArcTorrent",
 	"version": "1.0.0",
+	"description": "A torrent search aggregator API",
+	"private": true,
 	"engines": {
-		"node": "22.x"
+		"node": ">=18.x"
 	},
 	"scripts": {
-		"start": "node app.js",
-		"dev": "nodemon app.js"
+		"start": "node src/app.js",
+		"dev": "nodemon src/app.js"
 	},
 	"dependencies": {
 		"axios": "^1.6.5",
