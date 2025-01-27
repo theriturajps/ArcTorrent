@@ -201,10 +201,36 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	}
 });
 
-app.use('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public', '..', 'index.html'));
+// Route for serving index.html
+app.get('/', (req, res) => {
+	res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+});
+
+// 404 handler - This should come after all valid routes
+app.use((req, res, next) => {
+	res.status(404).json({
+		status: 404,
+		error: 'Path not found. Please check the URL and try again.',
+		availableRoutes: {
+			home: '/',
+			api: '/api/:website/:query/:page?',
+			supportedWebsites: [
+				'1337x', 'nyaasi', 'yts', 'piratebay', 'torlock', 'tgx',
+				'glodls', 'limetorrent', 'all'
+			]
+		}
+	});
+});
+
+// Error handler middleware - This should be the last middleware
+app.use((err, req, res, next) => {
+	console.error(err.stack);
+	res.status(500).json({
+		status: 500,
+		error: 'Something went wrong! Please try again later.'
+	});
 });
 
 const PORT = process.env.PORT || 3000;
-console.log(`Server is running on port http://localhost:${PORT}}`);
+console.log(`Server is running on port http://localhost:${PORT}`);
 app.listen(PORT);
