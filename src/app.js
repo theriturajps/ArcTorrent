@@ -26,7 +26,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	if (website === '1337x') {
 		if (page > 50) {
 			return res.json({
-				error: 'Please enter page value less than 51 to get the result :)'
+				error: 'Please enter page  value less than 51 to get the result :)'
 			})
 		} else {
 			torrent1337x(query, page)
@@ -47,7 +47,6 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				})
 		}
 	}
-
 	if (website === 'yts') {
 		torrentYts(query, page)
 			.then((data) => {
@@ -66,51 +65,6 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 
 			})
 	}
-
-	if (website === 'nyaasi') {
-		if (page > 14) {
-			return res.json({
-				error: '14 is the last page'
-			})
-		} else {
-			torrentNyaaSI(query, page)
-				.then((data) => {
-					if (data === null) {
-						return res.json({
-							error: 'Website is blocked change IP'
-						})
-
-					} else if (data.length === 0) {
-						return res.json({
-							error: 'No search result available for query (' + query + ')'
-						})
-					} else {
-						return res.send(data);
-					}
-
-				})
-		}
-	}
-
-	if (website === 'tgx') {
-		torrentGalaxy(query, page)
-			.then((data) => {
-				if (data === null) {
-					return res.json({
-						error: 'Website is blocked change IP'
-					})
-
-				} else if (data.length === 0) {
-					return res.json({
-						error: 'No search result available for query (' + query + ')'
-					})
-				} else {
-					return res.send(data);
-				}
-
-			})
-	}
-
 	if (website === 'torlock') {
 		torrentTorLock(query, page)
 			.then((data) => {
@@ -129,7 +83,6 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 
 			})
 	}
-
 	if (website === 'piratebay') {
 		torrentPirateBay(query, page)
 			.then((data) => {
@@ -148,9 +101,8 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 
 			})
 	}
-
-	if (website === 'limetorrent') {
-		torrentLimeTorrent(query, page)
+	if (website === 'tgx') {
+		torrentGalaxy(query, page)
 			.then((data) => {
 				if (data === null) {
 					return res.json({
@@ -186,6 +138,50 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			})
 	}
 
+	if (website === 'limetorrent') {
+		torrentLimeTorrent(query, page)
+			.then((data) => {
+				if (data === null) {
+					return res.json({
+						error: 'Website is blocked change IP'
+					})
+
+				} else if (data.length === 0) {
+					return res.json({
+						error: 'No search result available for query (' + query + ')'
+					})
+				} else {
+					return res.send(data);
+				}
+			})
+	}
+
+	if (website === 'nyaasi') {
+		if (page > 14) {
+			return res.json({
+				error: '14 is the last page'
+			})
+		} else {
+			torrentNyaaSI(query, page)
+				.then((data) => {
+					if (data === null) {
+						return res.json({
+							error: 'Website is blocked change IP'
+						})
+
+					} else if (data.length === 0) {
+						return res.json({
+							error: 'No search result available for query (' + query + ')'
+						})
+					} else {
+						return res.send(data);
+					}
+
+				})
+		}
+
+	}
+
 	if (website === "all") {
 		torrentCombo(query, page).then((data) => {
 			if (data !== null && data.length > 0) {
@@ -196,9 +192,10 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 				});
 			}
 		})
-	} else if (website !== '1337x' && website !== 'all' && website !== 'yts' && website !== 'nyaasi' && website !== 'tgx' && website !== 'torlock' && website !== 'piratebay' && website !== 'limetorrent' && website !== 'glodls') {
+
+	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'tgx' && website !== 'all' && website !== 'glodls' && website !== 'limetorrent') {
 		return res.json({
-			error: 'please enter valid website name (1337x, yts, nyaasi, tgx, torlock, piratebay, limetorrent, glodls and all)'
+			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | all (to scrap from every site)'
 		})
 	}
 });
