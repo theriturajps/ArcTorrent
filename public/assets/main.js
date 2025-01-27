@@ -1,10 +1,3 @@
-// Play sound effect function
-function playTapSound() {
-    const tapSound = new Audio('./assets/click.mp3');
-    tapSound.volume = 0.3;
-    tapSound.play().catch(err => console.log('Audio play failed:', err));
-}
-
 const websiteLogos = {
     '1337x': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
     'nyaasi': '<path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z"/>',
@@ -17,8 +10,6 @@ const websiteLogos = {
 };
 
 async function searchTorrents() {
-    playTapSound(); // Play sound when search is triggered
-
     const query = document.getElementById('query').value;
     const selectedWebsite = document.getElementById('selectedText').getAttribute('data-value') || document.getElementById('selectedText').textContent.toLowerCase();
     const page = parseInt(document.getElementById('page').value);
@@ -287,26 +278,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const queryInput = document.getElementById('query');
     const pageInput = document.getElementById('page');
 
-    // Add sound to all buttons
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', playTapSound);
-    });
-
-    // Add sound to input fields on focus
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('focus', playTapSound);
-    });
-
-    // Dropdown functionality with sound
+    // Dropdown functionality
     dropdownButton.addEventListener('click', (e) => {
-        playTapSound();
         dropdownList.classList.toggle('hidden');
     });
 
-    // Select website from dropdown with sound
+    // Select website from dropdown
     dropdownItems.forEach(item => {
         item.addEventListener('click', (e) => {
-            playTapSound();
             const value = e.target.getAttribute('data-value');
             selectedText.textContent = e.target.textContent;
             selectedText.setAttribute('data-value', value);
@@ -325,13 +304,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', function (event) {
         if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
             event.preventDefault();
-            playTapSound();
             queryInput.focus();
         }
 
         if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
             event.preventDefault();
-            playTapSound();
             searchTorrents();
         }
     });
@@ -400,11 +377,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-// Enter key search trigger with sound
+// Enter key search trigger
 document.getElementById('query').addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        playTapSound();
         searchTorrents();
     }
 });
@@ -422,9 +398,8 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Share website function with sound
+// Share website function
 function shareWebsite() {
-    playTapSound();
     const shareMessage = "Check out ArcTorrent - A powerful torrent search aggregator!";
     const websiteUrl = window.location.href;
 
@@ -446,6 +421,5 @@ function shareWebsite() {
 
 // Refresh page function with sound
 function refreshPage() {
-    playTapSound();
     location.reload();
 }
