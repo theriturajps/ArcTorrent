@@ -331,7 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zm0 12l-10-5 10 5 10-5v7l-10 5z" /></svg>
                     </div>
                     <h2 class="text-xl font-bold">
-                        Welcome to <a href="/" class="text-blue-200">ArcTorrent</a>
+                        Welcome to 
+                        <span class="text-green-500 font-extrabold relative inline-block stroke-current">
+                            <a href="/" class="text-blue-200">ArcTorrent</a>
+                            <svg class="absolute -bottom-0.5 w-full max-h-1.5" viewBox="0 0 55 5" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0.652466 4.00002C15.8925 2.66668 48.0351 0.400018 54.6853 2.00002" stroke-width="2"></path></svg>
+                        </span>
                     </h2>
                     <p class="text-sm text-blue-200">
                         Search across multiple torrent websites seamlessly with advanced features and quick access.
