@@ -38,50 +38,41 @@ async function torrentYts(query, page = '1') {
 				const response = await axios.get(url);
 				const htmlContent = response.data;
 
-				// Extract movie details using regex
+				// Extract basic movie details
 				data.Name = extractValue(htmlContent, /<div class="hidden-xs">.*?<h1[^>]*>(.*?)<\/h1>/s);
 				data.ReleasedDate = extractValue(htmlContent, /<div class="hidden-xs">.*?<h2[^>]*>(.*?)<\/h2>/s);
 				data.Genre = extractValue(htmlContent, /<div class="hidden-xs">.*?<h2[^>]*>.*?<\/h2>.*?<h2[^>]*>(.*?)<\/h2>/s);
-
-				const ratingMatch = htmlContent.match(/<div class="bottom-info.*?rating-row.*?<span[^>]*>(.*?)<\/span>/s);
-				data.Rating = ratingMatch ? `${ratingMatch[1].trim()} ⭐` : 'Not Rated';
-
-				const likesMatch = htmlContent.match(/<div class="bottom-info.*?rating-row.*?<span[^>]*>.*?<span[^>]*>(.*?)<\/span>/s);
-				data.Likes = likesMatch ? likesMatch[1].trim() : null;
-
-				// Extract technical specs
-				const techSpecRegex = /<div class="tech-spec-info".*?<div class="row">(.*?)<\/div>/gs;
-				const techSpecs = [...htmlContent.matchAll(techSpecRegex)];
-				if (techSpecs.length >= 2) {
-					data.Runtime = extractValue(techSpecs[1][1], /<div class="tech-spec-element".*?>(.*?)<\/div>/s);
-					data.Language = extractValue(techSpecs[0][1], /<div class="tech-spec-element".*?>(.*?)<\/div>/s);
-				}
-
+				data.Rating = extractValue(htmlContent, /<div class="bottom-info".*?rating-row[^>]*>.*?<span[^>]*>(.*?)<\/span>/s);
+				data.Rating = data.Rating ? `${data.Rating.trim()} ⭐` : 'Not Rated';
+				data.Likes = extractValue(htmlContent, /<div class="bottom-info".*?rating-row.*?<span[^>]*>.*?<span[^>]*>(.*?)<\/span>/s);
+				data.Runtime = extractValue(htmlContent, /Runtime:<\/span>\s*<span[^>]*>(.*?)<\/span>/s);
+				data.Language = extractValue(htmlContent, /Language:<\/span>\s*<span[^>]*>(.*?)<\/span>/s);
 				data.Url = url;
 
 				const posterMatch = htmlContent.match(/<div id="movie-poster".*?<img[^>]*src="([^"]+)"/s);
 				data.Poster = posterMatch ? `${baseUrl}${posterMatch[1]}` : null;
 
-				// Extract torrent files information
-				const torrentSection = htmlContent.match(/<div class="modal-download">.*?<div class="modal-content">(.*?)<\/div>/s);
-				if (torrentSection) {
-					const torrentRegex = /<div class="modal-torrent">(.*?)<\/div>/gs;
-					const torrentMatches = [...torrentSection[1].matchAll(torrentRegex)];
+				// Improved torrent files extraction
+				const torrentRegex = /<div class="modal-torrent">\s*<span[^>]*>(.*?)<\/span>\s*<span[^>]*>(.*?)<\/span>.*?<span[^>]*>(.*?)<\/span>.*?href="([^"]+)".*?href="([^"]+)"/gs;
+				const torrentMatches = [...htmlContent.matchAll(torrentRegex)];
 
-					torrentMatches.forEach(match => {
-						const torrentHtml = match[1];
-						const files = {
-							Quality: extractValue(torrentHtml, /<span[^>]*>(.*?)<\/span>/),
-							Type: extractValue(torrentHtml, /<span[^>]*>.*?<\/span>.*?>(.*?)<\/span>/),
-							Size: extractValue(torrentHtml, /<span[^>]*>.*?<\/span>.*?<span[^>]*>(.*?)<\/span>/),
-							Torrent: `${baseUrl}${extractValue(torrentHtml, /href="([^"]+)"/)}`,
-							Magnet: extractValue(torrentHtml, /href="(magnet:[^"]+)"/)
-						};
+				torrentMatches.forEach(match => {
+					const files = {
+						Quality: match[1].trim(),
+						Type: match[2].trim(),
+						Size: match[3].trim(),
+						Torrent: `${baseUrl}${match[4]}`,
+						Magnet: match[5]
+					};
+					if (Object.values(files).every(value => value)) {
 						data.Files.push(files);
-					});
-				}
+					}
+				});
 
-				all.push(data);
+				// Only push data if Files array is not empty
+				if (data.Files.length > 0) {
+					all.push(data);
+				}
 			} catch (error) {
 				console.error(`Error processing URL ${url}:`, error.message);
 			}
@@ -94,7 +85,6 @@ async function torrentYts(query, page = '1') {
 	}
 }
 
-// Helper function to extract values using regex
 function extractValue(html, regex) {
 	const match = html.match(regex);
 	return match ? match[1].trim() : null;
