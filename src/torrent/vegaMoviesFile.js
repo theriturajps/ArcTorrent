@@ -3,7 +3,7 @@ const axios = require('axios');
 
 async function torrentVegaMovies(query, page = 1) {
 	const ALLURL = [];
-	const url = `https://vegamovies.ms/page/${page}?s=${query}`;
+	const url = `https://rogmovies.art/page/${page}?s=${query}`;
 
 	let html;
 	try {
