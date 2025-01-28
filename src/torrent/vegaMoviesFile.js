@@ -20,11 +20,12 @@ async function torrentVegaMovies(query, page = 1) {
 
 	const $ = cheerio.load(html.data);
 
-	// Extract URLs specifically from post titles and avoid duplicates
-	$('.post-title.entry-title > a').each((_, element) => {
-		const url = $(element).attr('href');
-		if (url && !ALLURL.includes(url)) {
-			ALLURL.push(url);
+	// Target each article element
+	$('article').each((_, element) => {
+		// Find the URL in the post title
+		const titleLink = $(element).find('h2.post-title a').attr('href');
+		if (titleLink && !ALLURL.includes(titleLink)) {
+			ALLURL.push(titleLink);
 		}
 	});
 
