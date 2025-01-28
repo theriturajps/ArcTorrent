@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-async function limeTorrent(query, page = '1') {
+async function torrentXprimehub(query, page = '1') {
 	var ALLTORRENT = [];
 	const url = `https://xprimehub.vip/page/${page}/?s=${query}`;
 	let html;
@@ -21,4 +21,4 @@ async function limeTorrent(query, page = '1') {
 	return ALLTORRENT;
 
 }
-module.exports = limeTorrent
+module.exports = torrentXprimehub
