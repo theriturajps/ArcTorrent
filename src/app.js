@@ -10,7 +10,6 @@ const torrentTorLock = require('./torrent/torLockFile')
 const torrentPirateBay = require('./torrent/pirateBay');
 const torrentLimeTorrent = require('./torrent/limeTorrent');
 const torrentGlodls = require('./torrent/gloTorrents');
-const torrentXprimehub = require('./torrent/xprimehub');
 
 const app = express();
 
@@ -158,24 +157,6 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			})
 	}
 
-	if (website === 'xprimehub') {
-		torrentXprimehub(query)
-			.then((data) => {
-				if (data === null) {
-					return res.json({
-						error: 'Website is blocked change IP'
-					})
-
-				} else if (data.length === 0) {
-					return res.json({
-						error: 'No search result available for query (' + query + ')'
-					})
-				} else {
-					return res.send(data);
-				}
-			})
-	}
-
 	if (website === 'nyaasi') {
 		if (page > 14) {
 			return res.json({
@@ -213,9 +194,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			}
 		})
 
-	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'tgx' && website !== 'all' && website !== 'glodls' && website !== 'limetorrent' && website !== 'xprimehub') {
+	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'tgx' && website !== 'all' && website !== 'glodls' && website !== 'limetorrent') {
 		return res.json({
-			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | xprimehub | all (to scrap from every site)'
+			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | all (to scrap from every site)'
 		})
 	}
 });
@@ -235,7 +216,7 @@ app.use((req, res, next) => {
 			api: '/api/:website/:query/:page?',
 			supportedWebsites: [
 				'1337x', 'nyaasi', 'yts', 'piratebay', 'torlock', 'tgx',
-				'glodls', 'limetorrent', 'xprimehub', 'all'
+				'glodls', 'limetorrent', 'all'
 			]
 		}
 	});
