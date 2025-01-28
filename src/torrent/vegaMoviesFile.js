@@ -3,7 +3,6 @@ const axios = require('axios');
 
 async function torrentVegaMovies(query, page = '1') {
 
-	let all = []
 	let ALLURL = [];
 	if (page === '' || page === '1') {
 		var url = "https://vegamovies.ms/?s=" + query;
@@ -21,33 +20,9 @@ async function torrentVegaMovies(query, page = '1') {
 
 	const $ = cheerio.load(html.data);
 	$('div.post-hover').each((_, element) => {
-		let url = $(element).find('a')[0].attr('href');
+		let url = $(element).find('a').attr('href');
 		ALLURL.push(url);
 	})
-
-	// await Promise.all(ALLURL.map(async (url) => {
-	// 	const data = {
-	// 		'Name': null,
-	// 		'Likes': null,
-	// 		'Language': null,
-	// 		'Url': null,
-	// 	};
-	// 	let html;
-	// 	try {
-	// 		html = await axios.get(url);
-	// 	} catch {
-	// 		return;
-	// 	}
-
-	// 	const $ = cheerio.load(html.data);
-
-	// 	data['Name'] = $('div.post-inner.group').find('h1').text();
-	// 	data['Likes'] = $('div.bottom-info div.rating-row').eq(0).find('span').eq(1).text()
-	// 	data['Language'] = $('#content > div:nth-child(2) > article > div > div.entry.themeform > div.entry-inner > p:nth-child(5) > span:nth-child(10) > strong').text().trim();
-	// 	data['Url'] = url;
-
-	// 	all.push(data);
-	// }))
 
 	return ALLURL;
 
