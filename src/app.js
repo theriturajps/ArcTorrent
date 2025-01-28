@@ -10,7 +10,7 @@ const torrentTorLock = require('./torrent/torLockFile')
 const torrentPirateBay = require('./torrent/pirateBay');
 const torrentLimeTorrent = require('./torrent/limeTorrent');
 const torrentGlodls = require('./torrent/gloTorrents');
-const torrentVegaMovies = require('./torrent/vegaMoviesFile');
+const torrentXprimehub = require('./torrent/xprimehub');
 
 const app = express();
 
@@ -158,8 +158,8 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			})
 	}
 
-	if (website === 'vegamovies') {
-		torrentVegaMovies(query, page)
+	if (website === 'xprimehub') {
+		torrentXprimehub(query, page)
 			.then((data) => {
 				if (data === null) {
 					return res.json({
@@ -213,9 +213,9 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 			}
 		})
 
-	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'tgx' && website !== 'all' && website !== 'glodls' && website !== 'limetorrent' && website !== 'vegamovies') {
+	} else if (website !== 'nyaasi' && website !== '1337x' && website !== 'yts' && website !== 'piratebay' && website !== 'torlock' && website !== 'tgx' && website !== 'all' && website !== 'glodls' && website !== 'limetorrent' && website !== 'xprimehub') {
 		return res.json({
-			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | vegamovies | all (to scrap from every site)'
+			error: 'please select 1337x | nyaasi | yts | Piratebay | torlock | eztv | TorrentGalaxy(tgx) | rarbg | zooqle | kickass | bitsearch | glodls | magnetdl | limetorrent | torrentfunk | torrentproject | xprimehub | all (to scrap from every site)'
 		})
 	}
 });
@@ -235,7 +235,7 @@ app.use((req, res, next) => {
 			api: '/api/:website/:query/:page?',
 			supportedWebsites: [
 				'1337x', 'nyaasi', 'yts', 'piratebay', 'torlock', 'tgx',
-				'glodls', 'limetorrent', 'vegamovies', 'all'
+				'glodls', 'limetorrent', 'xprimehub', 'all'
 			]
 		}
 	});
