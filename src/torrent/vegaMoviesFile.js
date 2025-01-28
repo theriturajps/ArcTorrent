@@ -24,9 +24,7 @@ async function torrentVegaMovies(query, page = 1) {
 	$('#grid-wrapper article').each((_, article) => {
 		// Find the link in the post-thumbnail div
 		const url = $(article).find('.post-thumbnail > a').first().attr('href');
-		if (url && !ALLURL.includes(url)) {
-			ALLURL.push(url);
-		}
+		ALLURL.push(url) || (ALLURL = {error: 'No search result available for query (' + query + ')'});
 	});
 
 	return ALLURL;
