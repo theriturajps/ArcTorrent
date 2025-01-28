@@ -20,8 +20,8 @@ async function torrentVegaMovies(query, page = '1') {
 	}
 
 	const $ = cheerio.load(html.data);
-	$('div.post-inner.post-hover').each((_, element) => {
-		let url = $(element).find('a').attr('href');
+	$('div.post-hover').each((_, element) => {
+		let url = $(element).find('a')[0].attr('href');
 		ALLURL.push(url);
 	})
 
