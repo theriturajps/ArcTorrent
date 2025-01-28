@@ -159,7 +159,7 @@ app.use('/api/:website/:query/:page?', (req, res, next) => {
 	}
 
 	if (website === 'xprimehub') {
-		torrentXprimehub(query, page)
+		torrentXprimehub(query)
 			.then((data) => {
 				if (data === null) {
 					return res.json({

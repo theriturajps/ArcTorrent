@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 
-async function torrentXprimehub(query, page = '1') {
+async function torrentXprimehub(query) {
 	var ALLTORRENT = [];
 	const url = `https://ww4.123moviesfree.net/search/?q=` + query;
 	let html;
