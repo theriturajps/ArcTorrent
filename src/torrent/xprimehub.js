@@ -21,7 +21,7 @@ async function torrentXprimehub(query, page = 1) { // Default page is 1 if not s
 	const $ = cheerio.load(html.data);
 
 	// Extract URLs from the specified elements
-	$('div.bw_title').each((_, element) => {
+	$('body > div.container-all > div.container-fluid > div > div:nth-child(2) > div > div > div.bw_title').each((_, element) => {
 		const url = $(element).find('a').attr('href');
 		ALLURL.push(url);
 	});
