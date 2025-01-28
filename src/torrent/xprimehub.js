@@ -22,7 +22,7 @@ async function torrentXprimehub(query, page = 1) { // Default page is 1 if not s
 
 	// Extract URLs from the specified elements
 	$('div.bw_title').each((_, element) => {
-		const url = $(element).find('a').attr('href');
+		const url = $(element).find('a');
 		ALLURL.push(url);
 	});
 
