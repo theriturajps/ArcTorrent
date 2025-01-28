@@ -3,7 +3,7 @@ const axios = require('axios');
 
 async function torrentXprimehub(query, page = '1') {
 	var ALLTORRENT = [];
-	const url = `https://xprimehub.vip/page/${page}/?s=${query}`;
+	const url = `https://ww4.123moviesfree.net/search/?q=` + query;
 	let html;
 
 	try {
