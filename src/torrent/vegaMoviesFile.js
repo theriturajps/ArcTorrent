@@ -22,8 +22,8 @@ async function torrentVegaMovies(query, page = '1') {
 	const $ = cheerio.load(html.data);
 	$('div.post-inner.post-hover').each((_, element) => {
 		let url = $(element).find('a').attr('href');
-		console.log(url);
 		ALLURL.push(url);
+		console.log(ALLURL);
 	})
 
 	await Promise.all(ALLURL.map(async (url) => {
