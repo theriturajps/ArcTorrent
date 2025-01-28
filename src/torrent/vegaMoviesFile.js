@@ -20,12 +20,12 @@ async function torrentVegaMovies(query, page = 1) {
 
 	const $ = cheerio.load(html.data);
 
-	// Target each article element
-	$('article').each((_, element) => {
-		// Find the URL in the post title
-		const titleLink = $(element).find('h2.post-title a').attr('href');
-		if (titleLink && !ALLURL.includes(titleLink)) {
-			ALLURL.push(titleLink);
+	// Target the grid wrapper first
+	$('#grid-wrapper article').each((_, article) => {
+		// Find the link in the post-thumbnail div
+		const url = $(article).find('.post-thumbnail > a').first().attr('href');
+		if (url && !ALLURL.includes(url)) {
+			ALLURL.push(url);
 		}
 	});
 
