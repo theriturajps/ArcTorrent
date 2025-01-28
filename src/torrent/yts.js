@@ -1,80 +1,103 @@
-const cheerio = require('cheerio');
 const axios = require('axios');
 
 async function torrentYts(query, page = '1') {
-
-	let all = []
+	let all = [];
 	let ALLURL = [];
-	if (page === '' || page === '1') {
-		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest"
-	} else {
-		var url = "https://en.yts-official.mx/browse-movies?keyword=" + query + "&quality=all&genre=all&rating=0&year=0&order_by=latest&page=" + page;
-	}
-	let html;
+	const baseUrl = "https://en.yts-official.mx";
+	const url = page === '' || page === '1'
+		? `${baseUrl}/browse-movies?keyword=${query}&quality=all&genre=all&rating=0&year=0&order_by=latest`
+		: `${baseUrl}/browse-movies?keyword=${query}&quality=all&genre=all&rating=0&year=0&order_by=latest&page=${page}`;
+
 	try {
-		html = await axios.get(url, headers = {
-			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.121 Safari/537.36"
+		const html = await axios.get(url, {
+			headers: {
+				"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.121 Safari/537.36"
+			}
 		});
-	} catch {
+
+		// Extract movie URLs
+		const urlRegex = /<div class="browse-movie-bottom">.*?<a href="([^"]+)".*?<\/div>/gs;
+		const matches = [...html.data.matchAll(urlRegex)];
+		ALLURL = matches.map(match => `${baseUrl}${match[1]}`);
+
+		await Promise.all(ALLURL.map(async (url) => {
+			const data = {
+				Name: null,
+				ReleasedDate: null,
+				Genre: null,
+				Rating: null,
+				Likes: null,
+				Runtime: null,
+				Language: null,
+				Url: null,
+				Poster: null,
+				Files: []
+			};
+
+			try {
+				const response = await axios.get(url);
+				const htmlContent = response.data;
+
+				// Extract movie details using regex
+				data.Name = extractValue(htmlContent, /<div class="hidden-xs">.*?<h1[^>]*>(.*?)<\/h1>/s);
+				data.ReleasedDate = extractValue(htmlContent, /<div class="hidden-xs">.*?<h2[^>]*>(.*?)<\/h2>/s);
+				data.Genre = extractValue(htmlContent, /<div class="hidden-xs">.*?<h2[^>]*>.*?<\/h2>.*?<h2[^>]*>(.*?)<\/h2>/s);
+
+				const ratingMatch = htmlContent.match(/<div class="bottom-info.*?rating-row.*?<span[^>]*>(.*?)<\/span>/s);
+				data.Rating = ratingMatch ? `${ratingMatch[1].trim()} ⭐` : 'Not Rated';
+
+				const likesMatch = htmlContent.match(/<div class="bottom-info.*?rating-row.*?<span[^>]*>.*?<span[^>]*>(.*?)<\/span>/s);
+				data.Likes = likesMatch ? likesMatch[1].trim() : null;
+
+				// Extract technical specs
+				const techSpecRegex = /<div class="tech-spec-info".*?<div class="row">(.*?)<\/div>/gs;
+				const techSpecs = [...htmlContent.matchAll(techSpecRegex)];
+				if (techSpecs.length >= 2) {
+					data.Runtime = extractValue(techSpecs[1][1], /<div class="tech-spec-element".*?>(.*?)<\/div>/s);
+					data.Language = extractValue(techSpecs[0][1], /<div class="tech-spec-element".*?>(.*?)<\/div>/s);
+				}
+
+				data.Url = url;
+
+				const posterMatch = htmlContent.match(/<div id="movie-poster".*?<img[^>]*src="([^"]+)"/s);
+				data.Poster = posterMatch ? `${baseUrl}${posterMatch[1]}` : null;
+
+				// Extract torrent files information
+				const torrentSection = htmlContent.match(/<div class="modal-download">.*?<div class="modal-content">(.*?)<\/div>/s);
+				if (torrentSection) {
+					const torrentRegex = /<div class="modal-torrent">(.*?)<\/div>/gs;
+					const torrentMatches = [...torrentSection[1].matchAll(torrentRegex)];
+
+					torrentMatches.forEach(match => {
+						const torrentHtml = match[1];
+						const files = {
+							Quality: extractValue(torrentHtml, /<span[^>]*>(.*?)<\/span>/),
+							Type: extractValue(torrentHtml, /<span[^>]*>.*?<\/span>.*?>(.*?)<\/span>/),
+							Size: extractValue(torrentHtml, /<span[^>]*>.*?<\/span>.*?<span[^>]*>(.*?)<\/span>/),
+							Torrent: `${baseUrl}${extractValue(torrentHtml, /href="([^"]+)"/)}`,
+							Magnet: extractValue(torrentHtml, /href="(magnet:[^"]+)"/)
+						};
+						data.Files.push(files);
+					});
+				}
+
+				all.push(data);
+			} catch (error) {
+				console.error(`Error processing URL ${url}:`, error.message);
+			}
+		}));
+
+		return all;
+	} catch (error) {
+		console.error('Error fetching initial page:', error.message);
 		return null;
 	}
+}
 
-	const $ = cheerio.load(html.data);
-	$('div.browse-movie-bottom').each((_, element) => {
-		let url = `https://en.yts-official.mx` + $(element).find('a').attr('href');
-		ALLURL.push(url);
-	})
-
-	await Promise.all(ALLURL.map(async (url) => {
-		const data = {
-			'Name': null,
-			'ReleasedDate': null,
-			'Genre': null,
-			'Rating': null,
-			'Likes': null,
-			'Runtime': null,
-			'Language': null,
-			'Url': null,
-			'Poster': null,
-			'Files': []
-		};
-		let html;
-		try {
-			html = await axios.get(url);
-		} catch {
-			return;
-		}
-
-		const $ = cheerio.load(html.data);
-
-		data['Name'] = $('div.hidden-xs').find('h1').text();
-		data['ReleasedDate'] = $('div.hidden-xs').find('h2').eq(0).text();
-		data['Genre'] = $('div.hidden-xs').find('h2').eq(1).text();
-		data['Rating'] = (($('div.bottom-info div.rating-row').eq(3).find('span').eq(0).text()) + ' ⭐').trim() || 'Not Rated'
-		data['Likes'] = $('div.bottom-info div.rating-row').eq(0).find('span').eq(1).text()
-		data['Runtime'] = $('div .tech-spec-info').find('div .row').eq(1).find('div .tech-spec-element').eq(2).text().trim();
-		data['Language'] = $('div .tech-spec-info').find('div .row').eq(0).find('div .tech-spec-element').eq(2).text().trim();
-		data['Url'] = url;
-		data['Poster'] = ('https://en.yts-official.mx' + $('div #movie-poster').eq(0).find('img').attr('src'));
-
-		$('.modal-download > div:nth-child(1) div.modal-content').each((i, el) => {
-			$('div.modal-torrent').each((_, ele) => {
-				let files = {};
-				files.Quality = $(ele).find(':nth-child(1) >span').text();;
-				files.Type = $(ele).find(':nth-child(2)').text();
-				files.Size = $(ele).find(':nth-child(5)').text();
-				files.Torrent = ('https://en.yts-official.mx' + $(ele).find(':nth-child(6)').attr('href'));
-				files.Magnet = $(ele).find(':nth-child(7)').attr('href');
-
-				data.Files.push(files);
-			})
-
-		})
-		all.push(data);
-	}))
-
-	return all;
-
+// Helper function to extract values using regex
+function extractValue(html, regex) {
+	const match = html.match(regex);
+	return match ? match[1].trim() : null;
 }
 
 module.exports = torrentYts;
