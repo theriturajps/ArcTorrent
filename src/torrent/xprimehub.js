@@ -19,10 +19,12 @@ async function torrentXprimehub(query, page = '1') {
 
 	const $ = cheerio.load(html.data);
 
-	$('.bw_title').each((index, element) => {
-		const link = $(element).find('a').attr('href');
-
-		ALLTORRENT.push({ link });
+	// Find all anchor tags (<a>) and push their href attribute to ALLTORRENT
+	$('a').each((_, element) => {
+		const link = $(element).attr('href');
+		if (link) { // Only add links that are valid
+			ALLTORRENT.push(link);
+		}
 	});
 
 	return ALLTORRENT;
