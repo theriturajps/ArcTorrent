@@ -4,7 +4,6 @@ const axios = require('axios');
 async function torrent1337x(query = '', page = '1') {
 
 	const allTorrent = [];
-	let lastPage;
 	let html;
 	const url = 'https://1337xx.to/search/' + query + '/' + page + '/';
 	try {
@@ -14,10 +13,6 @@ async function torrent1337x(query = '', page = '1') {
 	}
 
 	const $ = cheerio.load(html.data)
-
-	lastPage = $('.pagination ul li:last').text().trim()
-
-	allTorrent.push(lastPage)
 
 	const links = $('td.name').map((_, element) => {
 		var link = 'https://1337xx.to' + $(element).find('a').next().attr('href');
