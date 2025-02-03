@@ -50,7 +50,7 @@ async function searchTorrents() {
     currentWebsite.textContent = website.toUpperCase();
     spinnerContainer.style.display = 'flex';
 
-    let apiUrl = `https://arc-torrent.vercel.app/api/${website}/${query}/${page}`;
+    let apiUrl = `https://torrent.exonoob.in/api/${website}/${query}/${page}`;
 
     try {
         const response = await fetch(apiUrl, {
